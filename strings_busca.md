@@ -1,3 +1,5 @@
+# Strings de busca utilizadas na RSL 
+
 * String genérica: ((recruitment OR selection OR job matching OR job seeking OR job hunting OR job fit OR team formation) AND recommendation AND (talent OR employed OR professional)) AND social network
 
 * Scopus: TITLE-ABS-KEY ((recruitment OR selection OR job matching OR job seeking OR job hunting OR job fit OR team formation) AND recommendation AND (talent OR employed OR professional)) AND social network AND (LIMIT-TO (SUBJAREA, "COMP") OR LIMIT-TO (SUBJAREA , "BUSI"))
