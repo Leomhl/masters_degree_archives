@@ -12,6 +12,15 @@ class Cultura(models.Model):
 
     nome = models.CharField(max_length=255)
 
+class Setor(models.Model):
+    def __str__(self):
+        return self.nome + " - "  + self.descricao
+
+    class Meta:
+        verbose_name_plural = ("Setores")
+
+    nome = models.CharField(max_length=255)
+    descricao = models.CharField(max_length=255)
 
 class Startup(models.Model):
     def __str__(self):
@@ -23,7 +32,7 @@ class Startup(models.Model):
         verbose_name_plural = ("Startups")
 
     nome = models.CharField(max_length=255)
-    tipo = models.CharField(max_length=255)
+    setor = models.ForeignKey(Setor, on_delete=models.CASCADE)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
 
 
@@ -112,6 +121,15 @@ class Profissional(models.Model):
     projetos = models.ManyToManyField(Projeto)
     premios = models.ManyToManyField(Premio)
 
+class RecomendacaoProfissional(models.Model):
+    class Meta:
+        verbose_name = ("Recomendação profissional")
+        verbose_name_plural = ("Recomendações profissionais")
+
+    recomendador = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='profissional_recomendador')
+    recomendado = models.ForeignKey(Profissional, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=255)
+
 class Vaga(models.Model):
 
     titulo = models.CharField(max_length=255)
@@ -120,3 +138,5 @@ class Vaga(models.Model):
     maturidade_academica = models.ForeignKey(MaturidadeAcademica, on_delete=models.CASCADE)
     maturidade_profissional = models.ForeignKey(MaturidadeProfissional, on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
+    cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
+
