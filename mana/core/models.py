@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime
 
 class Cultura(models.Model):
     def __str__(self):
