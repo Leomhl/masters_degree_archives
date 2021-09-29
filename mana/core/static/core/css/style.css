@@ -5,7 +5,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --blue: #007bff;
+  --blue: #007bnavbar-brandff;
   --indigo: #6610f2;
   --purple: #6f42c1;
   --pink: #e83e8c;
@@ -8304,7 +8304,7 @@ h1, h2, h3, h4, h5,
 .navbar-brand {
   color: orange;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 30px;
   line-height: 1;
   margin-bottom: 20px; }
   .navbar-brand span {

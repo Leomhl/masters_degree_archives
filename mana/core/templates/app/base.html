@@ -1,0 +1,43 @@
+<!doctype html>
+{% load static %}
+
+<html lang="pt-br">
+  <head>
+  	<title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	{% block styles %}{% endblock%}
+  </head>
+  <body>
+  	<section style="margin-top: 15px">
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col">
+					<a class="navbar-brand" href="index.html">maná</a>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-sm navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+		<div class="container">
+
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="fa fa-bars"></span> Menu
+		  </button>
+
+		  <div class="collapse navbar-collapse" id="ftco-nav">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active"><a href="#" class="nav-link">Rede social</a></li>
+				<li class="nav-item"><a href="#" class="nav-link">Recomendações</a></li>
+				<li class="nav-item"><a href="#" class="nav-link">Sobre</a></li>
+			</ul>
+		  </div>
+		</div>
+	  </nav>
+	</section>
+
+	{% block content %}{% endblock %}
+	{% block js %}{% endblock %}
+
+  </body>
+</html>
+
