@@ -1,0 +1,81 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Maná | Sobre{% endblock %}
+
+{% block styles %}
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+
+    <style>
+        .input-search{
+          height: 50px;
+          width: 50px;
+          border-style: none;
+          padding: 10px;
+          font-size: 18px;
+          letter-spacing: 2px;
+          outline: none;
+          border-radius: 25px;
+          transition: all .5s ease-in-out;
+          background-image: url({% static 'core/img/search.png'%});
+          background-size: 50px 50px;
+          background-repeat: no-repeat;
+          padding-right: 40px;
+        }
+
+        .input-search:focus{
+          width: 500px;
+          border-radius: 0px;
+          background-color: #FCF2F0;
+          border-bottom:1px solid rgba(255,255,255,.5);
+          transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            text-indent: 1px;
+            text-overflow: '';
+            text-align-last:center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<center style="margin-top: 150px;">
+  <div class="search-box">
+      <select class="input-search" id="select-vaga">
+          <option value="">Toque aqui e selecione uma vaga</option>
+          <option value="1">Desenvolvedor Java sênior</option>
+          <option value="2">Cientista de dados pleno</option>
+          <option value="3">Analista de sistemas</option>
+          <option value="4">Arquiteto de software</option>
+          <option value="5">DBA</option>
+      </select>
+  </div>
+
+    <div id="wait" style="display:none;">
+        <br>
+        <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">
+        <br>
+        Aguarde, buscando candidatos...
+    </div>
+</center>
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'core/js/jquery.min.js' %}"></script>
+    <script src="{% static 'core/js/popper.js' %}"></script>
+    <script src="{% static 'core/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'core/js/main.js' %}"></script>
+    <script>
+        $('#select-vaga').on('change', function() {
+            $('#wait').show();
+          });
+    </script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Maná | Sobre{% endblock %}
+
+{% block styles %}
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div style="text-align: center; margin-top: 20px; font-size: 18px;">
+
+        <img src="{% static 'core/img/mana_logo _full.png' %}" style="width: 250px;">
+        <img src="{% static 'core/img/logos_ufrj.png' %}" style="width: 250px;">
+
+        <p style="margin: 30px 100px; 0px; 100px;">
+            Maná tool é uma ferramenta que serve para recrutadores buscarem em uma rede social previamente cadastrada novas pessoas para preencherem vagas de trabalho que estão em aberto.
+            Esta ferramenta utiliza como base o método proposto Maná para recomendações de recrutamento em ecossistemas de startups.
+            <br><br>
+            Método e ferramenta criados por: Leonardo H. Marinho
+            <br>
+            Orientadora: Mônica Ferreira da Silva
+            <br>
+            Coorientadora: Jonice Oliveira
+        </p>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'core/js/jquery.min.js' %}"></script>
+    <script src="{% static 'core/js/popper.js' %}"></script>
+    <script src="{% static 'core/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'core/js/main.js' %}"></script>
+{% endblock %}
