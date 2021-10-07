@@ -165,31 +165,18 @@
 	INSERT INTO core_cultura (nome) VALUES ('Flexível');
 	INSERT INTO core_cultura (nome) VALUES ('Extremamente flexível');
 
-	INSERT INTO core_setor (nome, descricao) VALUES ('Agrotech ', 'Startups do setor de agronegócio');
-
-	INSERT INTO core_setor (nome, descricao) VALUES ('Fintech', 'Startups do setor financeiro');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Medtech', 'Startups do setor de saúde');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Edtech', 'Startups do setor de educação');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Foodtech', 'Startups do setor alimentício');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Legaltech', 'Startups do setor legal');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Imobtech', 'Startups do setor imobiliário');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Energytech', 'Startups do setor de energia');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Retailtech', 'Startups do setor varejista');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Fashiontech', 'Startups do setor da moda');
-	INSERT INTO core_setor (nome, descricao) VALUES ('Mktech', 'Startups do setor de publicidade e propaganda');
-
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Agência M3',2,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Aivis Sistema',1,2);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Alterdata',2,2);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Data Hex',2,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('DTO',3,11);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Falco Sistemas',1,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Full Screen',2,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Headthink',1,2);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Linx Sistemas e consultoria',3,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('MP Design',3,11);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Oasis',3,11);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Prion Soluções em Sistemas',2,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Prisma Sistemas',2,9);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('RG Sistemas',2,3);
-	INSERT INTO core_startup (nome, cultura_id, setor_id) VALUES ('Wx3',3,9);auth_user
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Agência M3',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Aivis Sistema',1,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Alterdata',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Data Hex',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('DTO',3,1134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Falco Sistemas',1,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Full Screen',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Headthink',1,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Linx Sistemas e consultoria',3,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('MP Design',3,1134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Oasis',3,1134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Prion Soluções em Sistemas',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Prisma Sistemas',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('RG Sistemas',2,134);
+	INSERT INTO core_startup (nome, cultura_id, area_id) VALUES ('Wx3',3,134);

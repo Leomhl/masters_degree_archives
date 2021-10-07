@@ -4,78 +4,136 @@
 {% block title %}Maná | Sobre{% endblock %}
 
 {% block styles %}
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--Geral imports-->
     <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <!-- Select search css -->
+    <link rel="stylesheet" href="{% static 'core/css/select.css' %}">
+
+    <!-- Table css -->
+    <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
 
     <style>
-        .input-search{
-          height: 50px;
-          width: 50px;
-          border-style: none;
-          padding: 10px;
-          font-size: 18px;
-          letter-spacing: 2px;
-          outline: none;
-          border-radius: 25px;
-          transition: all .5s ease-in-out;
-          background-image: url({% static 'core/img/search.png'%});
-          background-size: 50px 50px;
-          background-repeat: no-repeat;
-          padding-right: 40px;
-        }
-
-        .input-search:focus{
-          width: 500px;
-          border-radius: 0px;
-          background-color: #FCF2F0;
-          border-bottom:1px solid rgba(255,255,255,.5);
-          transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-        }
-
-        select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            text-indent: 1px;
-            text-overflow: '';
-            text-align-last:center;
-        }
+      .column {
+        padding-right: 40px;
+        padding-left: 40px;
+      }
     </style>
 {% endblock %}
 
 {% block content %}
-<center style="margin-top: 150px;">
-  <div class="search-box">
-      <select class="input-search" id="select-vaga">
-          <option value="">Toque aqui e selecione uma vaga</option>
-          <option value="1">Desenvolvedor Java sênior</option>
-          <option value="2">Cientista de dados pleno</option>
-          <option value="3">Analista de sistemas</option>
-          <option value="4">Arquiteto de software</option>
-          <option value="5">DBA</option>
-      </select>
-  </div>
+    <center>
+        <div class="search-box" id="search-session" style="margin-top: 150px;">
+            <select class="input-search" id="select-vaga">
+                <option value="">Toque aqui e selecione uma vaga</option>
+                <option value="1">Desenvolvedor Java sênior</option>
+                <option value="2">Cientista de dados pleno</option>
+                <option value="3">Analista de sistemas</option>
+                <option value="4">Arquiteto de software</option>
+                <option value="5">DBA</option>
+            </select>
+            <div id="wait" style="display:none;">
+                <br>
+                <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">
+                <br>
+                Aguarde, buscando candidatos...
+            </div>
+        </div>
 
-    <div id="wait" style="display:none;">
-        <br>
-        <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">
-        <br>
-        Aguarde, buscando candidatos...
-    </div>
-</center>
-
+        <div class="limiter" id="table-recommendations" style="display: none;">
+            <div class="container-table100">
+                <div class="wrap-table100">
+                    <div class="table100">
+                        <table>
+                            <thead>
+                                <tr class="table100-head">
+                                    <th class="column">Nome</th>
+                                    <th class="column">Maturidade acadêmica</th>
+                                    <th class="column">Maturidade profissional</th>
+                                    <th class="column">Cultura</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="column">
+                                        <a href="/admin/core/profissional/1/change/">Antônio Carlos Jobim</a>
+                                    </td>
+                                    <td class="column">
+                                        <a href="/admin/core/profissional/1/change/">Pós graduado</a>
+                                    </td>
+                                    <td class="column">
+                                        <a href="/admin/core/profissional/1/change/">Sênior</a>
+                                    </td>
+                                    <td class="column">
+                                        <a href="/admin/core/profissional/1/change/">Extremamente flexível</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Chico Buarque</td>
+                                    <td class="column">Pós graduado</td>
+                                    <td class="column">Pleno</td>
+                                    <td class="column">Extremamente flexível</td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Joaquim José da Silva Xavier</td>
+                                    <td class="column">Graduado</td>
+                                    <td class="column">Júnior</td>
+                                    <td class="column">Não flexível</td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Joaquim José da Silva Xavier</td>
+                                    <td class="column">Graduado</td>
+                                    <td class="column">Júnior</td>
+                                    <td class="column">Não flexível</td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Joaquim José da Silva Xavier</td>
+                                    <td class="column">Graduado</td>
+                                    <td class="column">Júnior</td>
+                                    <td class="column">Não flexível</td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Joaquim José da Silva Xavier</td>
+                                    <td class="column">Graduado</td>
+                                    <td class="column">Júnior</td>
+                                    <td class="column">Não flexível</td>
+                                </tr>
+                                <tr>
+                                    <td class="column">Joaquim José da Silva Xavier</td>
+                                    <td class="column">Graduado</td>
+                                    <td class="column">Júnior</td>
+                                    <td class="column">Não flexível</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
 
 {% endblock %}
 
 {% block js %}
     <script src="{% static 'core/js/jquery.min.js' %}"></script>
-    <script src="{% static 'core/js/popper.js' %}"></script>
-    <script src="{% static 'core/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'core/js/main.js' %}"></script>
+
     <script>
-        $('#select-vaga').on('change', function() {
-            $('#wait').show();
-          });
+        $(document).ready(function() {
+            $('#select-vaga').on('change', function() {
+
+                $('#wait').show();
+
+                setTimeout(function(){
+                    $('#search-session').hide();
+                    $('#table-recommendations').show();
+                }, 4000);
+            });
+
+            console.log($('#menu-recommendations').html());
+            $('#menu-recommendations').addClass('active');
+
+            $('#menu-recommendation').addClass('active');
+        });
     </script>
 {% endblock %}

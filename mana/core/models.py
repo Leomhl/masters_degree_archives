@@ -11,15 +11,17 @@ class Cultura(models.Model):
 
     nome = models.CharField(max_length=255)
 
-class Setor(models.Model):
+class AreaAtuacao(models.Model):
     def __str__(self):
-        return self.nome + " - "  + self.descricao
+        return self.nome
 
     class Meta:
-        verbose_name_plural = ("Setores")
+        ordering = ['nome']
+        verbose_name = ("Área de atuação")
+        verbose_name_plural = ("Áreas de atuação")
 
     nome = models.CharField(max_length=255)
-    descricao = models.CharField(max_length=255)
+
 
 class Startup(models.Model):
     def __str__(self):
@@ -31,7 +33,7 @@ class Startup(models.Model):
         verbose_name_plural = ("Startups")
 
     nome = models.CharField(max_length=255)
-    setor = models.ForeignKey(Setor, on_delete=models.CASCADE)
+    area = models.ForeignKey(AreaAtuacao, on_delete=models.CASCADE)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
 
 
@@ -55,17 +57,6 @@ class Habilidade(models.Model):
         ordering = ['nome']
         verbose_name = ("Habilidade")
         verbose_name_plural = ("Habilidades")
-
-    nome = models.CharField(max_length=255)
-
-class AreaAtuacao(models.Model):
-    def __str__(self):
-        return self.nome
-
-    class Meta:
-        ordering = ['nome']
-        verbose_name = ("Área de atuação")
-        verbose_name_plural = ("Áreas de atuação")
 
     nome = models.CharField(max_length=255)
 
@@ -138,4 +129,5 @@ class Vaga(models.Model):
     maturidade_profissional = models.ForeignKey(MaturidadeProfissional, on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
+    profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE)
 

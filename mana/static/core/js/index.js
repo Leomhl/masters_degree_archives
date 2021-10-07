@@ -14,7 +14,7 @@
     let getStylesheet = name => {
       let convert = res => name.match(/[.]json$/) ? toJson(res) : toText(res);
 
-      return fetch(`core/stylesheets/${name}`).then( convert );
+      return fetch(`static/core/stylesheets/${name}`).then( convert );
     };
     let applyStylesheet = stylesheet => {
       if( typeof stylesheet === typeof '' ){
@@ -26,7 +26,7 @@
     let applyStylesheetFromSelect = () => Promise.resolve( $stylesheet.value ).then( getStylesheet ).then( applyStylesheet );
 
     let $dataset = $('#data');
-    let getDataset = name => fetch(`core/datasets/${name}`).then( toJson );
+    let getDataset = name => fetch(`static/core/datasets/${name}`).then( toJson );
     let applyDataset = dataset => {
       // so new eles are offscreen
       cy.zoom(0.001);
