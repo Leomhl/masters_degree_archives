@@ -103,6 +103,7 @@ class Profissional(models.Model):
         verbose_name_plural = ("Profissionais")
 
     nome = models.CharField(max_length=255)
+    linkedin_url = models.CharField(max_length=255)
     maturidade_profissional = models.ForeignKey(MaturidadeProfissional, on_delete=models.CASCADE)
     maturidade_academica = models.ForeignKey(MaturidadeAcademica, on_delete=models.CASCADE)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
@@ -112,6 +113,10 @@ class Profissional(models.Model):
     premios = models.ManyToManyField(Premio)
 
 class RecomendacaoProfissional(models.Model):
+
+    def __str__(self):
+        return '{} -> {}: {}'.format(self.recomendador, self.recomendado, self.descricao)
+
     class Meta:
         verbose_name = ("Recomendação profissional")
         verbose_name_plural = ("Recomendações profissionais")
@@ -121,6 +126,14 @@ class RecomendacaoProfissional(models.Model):
     descricao = models.CharField(max_length=255)
 
 class Vaga(models.Model):
+
+    def __str__(self):
+        return self.titulo
+
+    class Meta:
+        ordering = ['titulo']
+        verbose_name = ("Vaga")
+        verbose_name_plural = ("Vagas")
 
     titulo = models.CharField(max_length=255)
     startup = models.ForeignKey(Startup, on_delete=models.CASCADE)

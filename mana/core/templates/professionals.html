@@ -1,0 +1,68 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Maná | Profissionais{% endblock %}
+
+{% block styles %}
+    <!--Geral imports-->
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <!-- Select search css -->
+    <link rel="stylesheet" href="{% static 'core/css/select.css' %}">
+
+    <!-- Table css -->
+    <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+
+    <style>
+      .column {
+        padding-right: 40px;
+        padding-left: 40px;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="margin-top: 15px;">Lista de profissionais cadastrados</h1>
+        <div class="limiter" id="table-recommendations">
+            <div class="container-table100">
+                <div class="wrap-table100">
+                    <div class="table100">
+                        <table>
+                            <thead>
+                                <tr class="table100-head">
+                                    <th class="column">Nome</th>
+                                    <th class="column">Linkedin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for profissional in profissionais %}
+                                    <tr>
+                                        <td class="column">
+                                            <a href="/admin/core/profissional/1/change/">{{ profissional.nome }}</a>
+                                        </td>
+                                        <td class="column">
+                                            <a href="{{ profissional.linkedin_url }}" target="_blank">{{ profissional.linkedin_url }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'core/js/jquery.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#menu-professionals').addClass('active');
+        });
+    </script>
+{% endblock %}

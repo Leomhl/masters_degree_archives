@@ -1,7 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
 
-{% block title %}Maná | Sobre{% endblock %}
+{% block title %}Maná | Recomendações{% endblock %}
 
 {% block styles %}
     <!--Geral imports-->
@@ -27,11 +27,11 @@
         <div class="search-box" id="search-session" style="margin-top: 150px;">
             <select class="input-search" id="select-vaga">
                 <option value="">Toque aqui e selecione uma vaga</option>
-                <option value="1">Desenvolvedor Java sênior</option>
-                <option value="2">Cientista de dados pleno</option>
-                <option value="3">Analista de sistemas</option>
-                <option value="4">Arquiteto de software</option>
-                <option value="5">DBA</option>
+
+                {% for vaga in vagas %}
+                    <option value="{{ vaga.id }}">{{ vaga.titulo }}</option>
+                {% endfor %}
+
             </select>
             <div id="wait" style="display:none;">
                 <br>
