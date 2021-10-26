@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from core.models import Profissional, Vaga
 
@@ -16,9 +17,10 @@ def professionals(request):
     profissionais = list(Profissional.objects.values('nome', 'linkedin_url'))
     return render(request, 'professionals.html', {'profissionais': profissionais})
 
-# Rotas para criar
 
-# Rotas admin - OK
-# Rota da rede social toda - ok
-# Rota de about - ok
-# Rota da tela de buscar candidato através da vaga (selecionar uma vaga e rodar) - ok
+# Core route of the application
+def recommendationsapi(request):
+    # seguir daqui
+    profissionais = list(Profissional.objects.select_related('cultura', 'maturidade_academica', 'maturidade_profissional').values())
+    print(profissionais)
+    return JsonResponse(profissionais, safe=False)

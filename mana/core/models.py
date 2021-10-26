@@ -104,9 +104,9 @@ class Profissional(models.Model):
 
     nome = models.CharField(max_length=255)
     linkedin_url = models.CharField(max_length=255)
-    maturidade_profissional = models.ForeignKey(MaturidadeProfissional, on_delete=models.CASCADE)
+    maturidade_profissional = models.ForeignKey(MaturidadeProfissional, related_name='maturidades_profissionais', on_delete=models.CASCADE)
     maturidade_academica = models.ForeignKey(MaturidadeAcademica, on_delete=models.CASCADE)
-    cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
+    cultura = models.ForeignKey(Cultura,  related_name='culturas', on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     habilidades = models.ManyToManyField(Habilidade)
     projetos = models.ManyToManyField(Projeto)
