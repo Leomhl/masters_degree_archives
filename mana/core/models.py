@@ -34,7 +34,7 @@ class Startup(models.Model):
 
     nome = models.CharField(max_length=255)
     area = models.ForeignKey(AreaAtuacao, on_delete=models.CASCADE)
-    cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
+    # cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
 
 
 class Projeto(models.Model):
@@ -109,8 +109,9 @@ class Profissional(models.Model):
     cultura = models.ForeignKey(Cultura,  related_name='culturas', on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     habilidades = models.ManyToManyField(Habilidade)
-    projetos = models.ManyToManyField(Projeto)
-    premios = models.ManyToManyField(Premio)
+    startups = models.ManyToManyField(Startup, blank=True)
+    projetos = models.ManyToManyField(Projeto, blank=True)
+    premios = models.ManyToManyField(Premio, blank=True)
 
 class RecomendacaoProfissional(models.Model):
 
@@ -143,4 +144,3 @@ class Vaga(models.Model):
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE)
-
