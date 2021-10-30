@@ -24,7 +24,6 @@
 
 {% block content %}
     <center>
-        <buttom id="gambi">Gambi</buttom>
         <div class="search-box" id="search-session" style="margin-top: 150px;">
             <select class="input-search" id="select-vaga">
                 <option value="">Toque aqui e selecione uma vaga</option>
@@ -122,20 +121,18 @@
     <script>
         $(document).ready(function() {
 
-            $('#gambi').click(function(){
+
+            $('#select-vaga').on('change', function() {
                 $.getJSON('/api/recomendacoes/', function(data) {
                     console.log(data);
                 });
-            });
 
-            $('#select-vaga').on('change', function() {
+<!--                $('#wait').show();-->
 
-                $('#wait').show();
-
-                setTimeout(function(){
-                    $('#search-session').hide();
-                    $('#table-recommendations').show();
-                }, 4000);
+<!--                setTimeout(function(){-->
+<!--                    $('#search-session').hide();-->
+<!--                    $('#table-recommendations').show();-->
+<!--                }, 4000);-->
             });
 
             $('#menu-recommendations').addClass('active');
