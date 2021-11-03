@@ -37,7 +37,6 @@ def recommendationsapi(request):
     # profissionais = Profissional.objects.values()
     # culturas = Cultura.objects.values()
 
-
     # {
     # id: 123, #id do profissional,
     # areas_similares: 1, #quantidade de áreas que são similares a da vaga
@@ -49,9 +48,36 @@ def recommendationsapi(request):
     # popularidade: 123, #o quão conectado a outros nós o profissional está
     # }
 
+    # Dados da vaga
+    vaga = Vaga.objects.filter(id=request.GET['id'])
+    tmpJson = serializers.serialize("json", vaga)
+    vaga = json.loads(tmpJson)
+    vaga[0]['fields']['id'] = vaga[0]['pk']
+    vaga = vaga[0]['fields']
 
+    # Dados do profissional
     profissionais = Profissional.objects.all()
     tmpJson = serializers.serialize("json", profissionais)
-    tmpObj = json.loads(tmpJson)
+    profissionais = json.loads(tmpJson)
 
-    return JsonResponse(tmpObj, safe=False)
+    # Dados das recomendacoes de habilidades
+    recomendacoes = RecomendacaoHabilidades.objects.all()
+    tmpJson = serializers.serialize("json", recomendacoes)
+    recomendacoes = json.loads(tmpJson)
+
+    # Inserção das recomendações no objeto do profissional
+    for profissional in profissionais:
+        profissional['fields']['id'] = profissional['pk']
+        profissional = profissional['fields']
+
+        for recomendacao in recomendacoes:
+            if(recomendacao['fields']['recomendado'] == profissional['id']):
+                profissional['recomendacoes'] = recomendacao['fields']
+
+    obj = {
+        'profissionais': profissionais,
+        'vaga': vaga
+    }
+
+    # Retorno da API
+    return JsonResponse(obj, safe=False)

@@ -123,7 +123,10 @@
 
 
             $('#select-vaga').on('change', function() {
-                $.getJSON('/api/recomendacoes/', function(data) {
+                $.getJSON('/api/recomendacoes/', {id: $('#select-vaga').val()}, function(data) {
+<!--                    var elementos = [];-->
+<!--                    for(var i of data)-->
+<!--                        elementos.push(i['fields']);-->
                     console.log(data);
                 });
 

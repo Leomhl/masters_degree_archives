@@ -108,23 +108,23 @@ class Profissional(models.Model):
     maturidade_academica = models.ForeignKey(MaturidadeAcademica, on_delete=models.CASCADE)
     cultura = models.ForeignKey(Cultura,  related_name='culturas', on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
-    habilidades = models.ManyToManyField(Habilidade)
+    habilidades = models.ManyToManyField(Habilidade, blank=True)
     startups = models.ManyToManyField(Startup, blank=True)
     projetos = models.ManyToManyField(Projeto, blank=True)
     premios = models.ManyToManyField(Premio, blank=True)
 
-class RecomendacaoProfissional(models.Model):
+class RecomendacaoHabilidades(models.Model):
 
     def __str__(self):
-        return '{} -> {}: {}'.format(self.recomendador, self.recomendado, self.descricao)
+        return '{} -> {}'.format(self.recomendador, self.recomendado)
 
     class Meta:
-        verbose_name = ("Recomendação profissional")
-        verbose_name_plural = ("Recomendações profissionais")
+        verbose_name = ("Recomendação de habilidade")
+        verbose_name_plural = ("Recomendações de habilidades")
 
     recomendador = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='profissional_recomendador')
     recomendado = models.ForeignKey(Profissional, on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=255)
+    habilidades = models.ManyToManyField(Habilidade)
 
 class Vaga(models.Model):
 
