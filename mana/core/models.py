@@ -76,7 +76,7 @@ class MaturidadeAcademica(models.Model):
         return self.nome
 
     class Meta:
-        ordering = ['nome']
+        ordering = ['id']
         verbose_name = ("Maturidade acadêmica")
         verbose_name_plural = ("Maturidades acadêmica")
 

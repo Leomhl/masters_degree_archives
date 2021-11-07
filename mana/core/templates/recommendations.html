@@ -49,62 +49,13 @@
                             <thead>
                                 <tr class="table100-head">
                                     <th class="column">Nome</th>
-                                    <th class="column">Maturidade acadêmica</th>
-                                    <th class="column">Maturidade profissional</th>
-                                    <th class="column">Cultura</th>
+                                    <th class="column">Mat. acadêmica</th>
+                                    <th class="column">Mat. profissional</th>
+                                    <th class="column">Linkedin</th>
+                                    <th class="column">Pontuação</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="column">
-                                        <a href="/admin/core/profissional/1/change/">Antônio Carlos Jobim</a>
-                                    </td>
-                                    <td class="column">
-                                        <a href="/admin/core/profissional/1/change/">Pós graduado</a>
-                                    </td>
-                                    <td class="column">
-                                        <a href="/admin/core/profissional/1/change/">Sênior</a>
-                                    </td>
-                                    <td class="column">
-                                        <a href="/admin/core/profissional/1/change/">Extremamente flexível</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Chico Buarque</td>
-                                    <td class="column">Pós graduado</td>
-                                    <td class="column">Pleno</td>
-                                    <td class="column">Extremamente flexível</td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Joaquim José da Silva Xavier</td>
-                                    <td class="column">Graduado</td>
-                                    <td class="column">Júnior</td>
-                                    <td class="column">Não flexível</td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Joaquim José da Silva Xavier</td>
-                                    <td class="column">Graduado</td>
-                                    <td class="column">Júnior</td>
-                                    <td class="column">Não flexível</td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Joaquim José da Silva Xavier</td>
-                                    <td class="column">Graduado</td>
-                                    <td class="column">Júnior</td>
-                                    <td class="column">Não flexível</td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Joaquim José da Silva Xavier</td>
-                                    <td class="column">Graduado</td>
-                                    <td class="column">Júnior</td>
-                                    <td class="column">Não flexível</td>
-                                </tr>
-                                <tr>
-                                    <td class="column">Joaquim José da Silva Xavier</td>
-                                    <td class="column">Graduado</td>
-                                    <td class="column">Júnior</td>
-                                    <td class="column">Não flexível</td>
-                                </tr>
+                            <tbody id="render-data">
                             </tbody>
                         </table>
                     </div>
@@ -123,22 +74,39 @@
 
 
             $('#select-vaga').on('change', function() {
+
+                $('#wait').show();
                 $.getJSON('/api/recomendacoes/', {id: $('#select-vaga').val()}, function(data) {
-<!--                    var elementos = [];-->
-<!--                    for(var i of data)-->
-<!--                        elementos.push(i['fields']);-->
-                    console.log(data);
+                    $('#table-recommendations').show();
+                    $('#search-session').hide();
+                    $('#wait').hide();
+                    console.log(data)
+
+                    var html = '';
+                    for(var i of data) {
+                        html += '<tr>';
+                        html += '<td class="column">';
+                        html += i.nome;
+                        html += '</td>';
+                        html += '<td class="column">';
+                        html += i.maturidade_academica;
+                        html += '</td>';
+                        html += '<td class="column">';
+                        html += i.maturidade_profissional;
+                        html += '</td>';
+                        html += '<td class="column">';
+                        html += '<a href="'+i.linkedin_url+'">'+i.linkedin_url+'</a>';
+                        html += '</td>';
+                        html += '<td class="column">';
+                        html += i.total;
+                        html += '</td>';
+                        html += '</tr>';
+                   }
+
+                   $('#render-data').append(html);
                 });
-
-<!--                $('#wait').show();-->
-
-<!--                setTimeout(function(){-->
-<!--                    $('#search-session').hide();-->
-<!--                    $('#table-recommendations').show();-->
-<!--                }, 4000);-->
             });
 
-            $('#menu-recommendations').addClass('active');
             $('#menu-recommendation').addClass('active');
         });
     </script>
