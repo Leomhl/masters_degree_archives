@@ -59,19 +59,19 @@ def recommendationsapi(request):
     mat_academica_temp = MaturidadeAcademica.objects.all()
     tmpJson = serializers.serialize("json", mat_academica_temp)
     mat_academica_temp = json.loads(tmpJson)
-    mat_academica = {};
+    mat_academica = {}
 
     for mat_acad in mat_academica_temp:
-        mat_academica[mat_acad['pk']] = mat_acad['fields'];
+        mat_academica[mat_acad['pk']] = mat_acad['fields']
 
     # Dados das maturidades profissionais
     mat_profissional_temp = MaturidadeProfissional.objects.all()
     tmpJson = serializers.serialize("json", mat_profissional_temp)
     mat_profissional_temp = json.loads(tmpJson)
-    mat_profissional = {};
+    mat_profissional = {}
 
     for mat_prof in mat_profissional_temp:
-        mat_profissional[mat_prof['pk']] = mat_prof['fields'];
+        mat_profissional[mat_prof['pk']] = mat_prof['fields']
 
     # Variável que servirá de retornor para a API
     recomendacao_resultado = []
@@ -95,41 +95,53 @@ def recommendationsapi(request):
         peso_areas_similares = 0
         peso_habilidades = 0
 
-        # Maturidade profissional
-        if(profissional['maturidade_profissional'] == vaga['maturidade_profissional']):
-            peso_mat_prof = 4
-        elif(profissional['maturidade_profissional'] > vaga['maturidade_profissional']):
-            peso_mat_prof = 2
-        else:
-            peso_mat_prof = 1
+        if(vaga['maturidade_profissional'] == profissional['maturidade_profissional']):
+            peso_mat_prof = 50
 
+        if(vaga['maturidade_profissional'] == 1):
+            if(profissional['maturidade_profissional'] == 2):
+                peso_mat_prof = -30
+            elif (profissional['maturidade_profissional'] == 3):
+                peso_mat_prof = -50
+
+        if(vaga['maturidade_profissional'] == 2):
+            if(profissional['maturidade_profissional'] == 3):
+                peso_mat_prof = -30
+            elif (profissional['maturidade_profissional'] == 1):
+                peso_mat_prof = -50
+
+        if(vaga['maturidade_profissional'] == 3):
+            if(profissional['maturidade_profissional'] == 2):
+                peso_mat_prof = -30
+            elif (profissional['maturidade_profissional'] == 1):
+                peso_mat_prof = -50
 
         # Maturidade acadêmica correta para a vaga
         if(profissional['maturidade_academica'] == vaga['maturidade_academica']):
-            peso_mat_acad = 4
+            peso_mat_acad = 50
 
         # Testa se a maturidade é a mais baixa (1), não faz sentido recomendar um pós graduado pra uma vaga de jr
         elif(vaga['maturidade_academica'] == 1):
             if(profissional['maturidade_academica'] == 2):
-                peso_mat_acad = 3
+                peso_mat_acad = 25
             elif(profissional['maturidade_academica'] != 1 and profissional['maturidade_academica'] != 2):
                 peso_mat_acad = 0
 
         # Testa se a maturidade é a mais alta (5), não faz sentido recomendar um graduado pra uma vaga de referênca/doutor
         elif(vaga['maturidade_academica'] == 5):
             if(profissional['maturidade_academica'] == 4):
-                peso_mat_acad = 3
+                peso_mat_acad = 25
             elif(profissional['maturidade_academica'] != 5 and profissional['maturidade_academica'] != 4):
                 peso_mat_acad = 0
 
         # Caso a maturidade da vaga seja 2
         elif(vaga['maturidade_academica'] == 2):
             if(profissional['maturidade_academica'] == 1):
-                peso_mat_acad = 1
+                peso_mat_acad = 6.25
             elif(profissional['maturidade_academica'] == 3):
-                peso_mat_acad = 3
+                peso_mat_acad = 25
             elif(profissional['maturidade_academica'] == 4):
-                peso_mat_acad = 2
+                peso_mat_acad = 12.5
             elif(profissional['maturidade_academica'] == 5):
                 peso_mat_acad = 0
 
@@ -138,40 +150,39 @@ def recommendationsapi(request):
             if(profissional['maturidade_academica'] == 1):
                 peso_mat_acad = 0
             elif (profissional['maturidade_academica'] == 2):
-                peso_mat_acad = 1
+                peso_mat_acad = 6.25
             elif(profissional['maturidade_academica'] == 4):
-                peso_mat_acad = 3
+                peso_mat_acad = 25
             elif (profissional['maturidade_academica'] == 5):
-                peso_mat_acad = 2
+                peso_mat_acad = 12.5
 
         # Caso a maturidade da vaga seja 4
         elif(vaga['maturidade_academica'] == 4):
             if(profissional['maturidade_academica'] == 5):
-                peso_mat_acad = 3
+                peso_mat_acad = 25
             elif(profissional['maturidade_academica'] == 3):
-                peso_mat_acad = 2
+                peso_mat_acad = 12.5
             elif(profissional['maturidade_academica'] == 1 or profissional['maturidade_academica'] == 2):
                 peso_mat_acad = 0
-
 
         # Áreas de atuação similares
         for vaga_area in vaga['areas_atuacao']:
             for profissional_area in profissional['areas_atuacao']:
                 if(vaga_area == profissional_area):
-                    peso_areas_similares += 1
+                    peso_areas_similares += 10
 
         for vaga_habilidade in vaga['habilidades']:
             for profissional_habilidade in profissional['habilidades']:
                 if(vaga_habilidade == profissional_habilidade):
-                    peso_habilidades += 1
+                    peso_habilidades += 25
 
         # Adaptação de cultura
         if(profissional['cultura'] == vaga['cultura']):
-            peso_cultura = 4
+            peso_cultura = 15
         elif(profissional['cultura'] > vaga['cultura']):
-            peso_cultura = 2
+            peso_cultura = 10
         else:
-            peso_cultura = 1
+            peso_cultura = 5
 
         profissionalManaData = {
             'nome': profissional['nome'],
@@ -189,10 +200,8 @@ def recommendationsapi(request):
             'peso_rec_habilidades': len(profissional['recomendacoes'])
         }
 
-
         # Após criar a outra função, utilizar a ordenação com base nos pesos
         pontuacao.append(profissionalManaData)
-        # print('{}'.format(profissionalManaData))
 
     # recomendacao_resultado
     obj = {
@@ -201,7 +210,6 @@ def recommendationsapi(request):
     }
 
     # Retorno da API
-
     for candidato in pontuacao:
         total = candidato['peso_mat_prof'] + candidato['peso_mat_acad'] + candidato['peso_premiacoes'] + candidato['peso_rec_habilidades']
         total += candidato['peso_areas_similares'] + candidato['peso_habilidades'] + candidato['peso_cultura']

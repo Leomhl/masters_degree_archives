@@ -26,11 +26,12 @@
 */
 /* ------------------------------------ */
 a {
-	margin: 0px;
-	transition: all 0.4s;
-	-webkit-transition: all 0.4s;
-  -o-transition: all 0.4s;
-  -moz-transition: all 0.4s;
+    margin: 0px;
+    transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    color: gray;
 }
 
 a:focus {
@@ -39,6 +40,7 @@ a:focus {
 
 a:hover {
 	text-decoration: none;
+	color: orange;
 }
 
 /* ------------------------------------ */
@@ -104,13 +106,7 @@ iframe {
 
 .container-table100 {
   width: 100%;
-  min-height: 100vh;
-  background: #c850c0;
-  background: -webkit-linear-gradient(45deg, #4158d0, #c850c0);
-  background: -o-linear-gradient(45deg, #4158d0, #c850c0);
-  background: -moz-linear-gradient(45deg, #4158d0, #c850c0);
-  background: linear-gradient(45deg, #4158d0, #c850c0);
-
+  // min-height: 15vh;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -144,7 +140,7 @@ table td, table th {
 }
 table thead tr {
   height: 60px;
-  background: #36304a;
+  background: black;
 }
 table tbody tr {
   height: 50px;
@@ -167,9 +163,8 @@ table td.r, table th.r {
 
 
 .table100-head th{
-  /*font-family: OpenSans-Regular;*/
   font-size: 18px;
-  color: #fff;
+  color: orange;
   line-height: 1.2;
   font-weight: unset;
 }
@@ -179,7 +174,6 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr {
-  /*font-family: OpenSans-Regular;*/
   font-size: 15px;
   color: #808080;
   line-height: 1.2;
@@ -191,36 +185,6 @@ tbody tr:hover {
   background-color: #f5f5f5;
   cursor: pointer;
 }
-
-.column1 {
-  width: 260px;
-  padding-left: 40px;
-}
-
-.column2 {
-  width: 160px;
-}
-
-.column3 {
-  width: 245px;
-}
-
-.column4 {
-  width: 110px;
-  text-align: right;
-}
-
-.column5 {
-  width: 170px;
-  text-align: right;
-}
-
-.column6 {
-  width: 222px;
-  text-align: right;
-  padding-right: 62px;
-}
-
 
 @media screen and (max-width: 992px) {
   table {
@@ -244,7 +208,6 @@ tbody tr:hover {
     margin-bottom: 0;
   }
   table tbody tr td:before {
-    /*font-family: OpenSans-Regular;*/
     font-size: 14px;
     color: #999999;
     line-height: 1.2;
@@ -253,39 +216,6 @@ tbody tr:hover {
     width: 40%;
     left: 30px;
     top: 0;
-  }
-  table tbody tr td:nth-child(1):before {
-    content: "Date";
-  }
-  table tbody tr td:nth-child(2):before {
-    content: "Order ID";
-  }
-  table tbody tr td:nth-child(3):before {
-    content: "Name";
-  }
-  table tbody tr td:nth-child(4):before {
-    content: "Price";
-  }
-  table tbody tr td:nth-child(5):before {
-    content: "Quantity";
-  }
-  table tbody tr td:nth-child(6):before {
-    content: "Total";
-  }
-
-  .column4,
-  .column5,
-  .column6 {
-    text-align: left;
-  }
-
-  .column4,
-  .column5,
-  .column6,
-  .column1,
-  .column2,
-  .column3 {
-    width: 100%;
   }
 
   tbody tr {

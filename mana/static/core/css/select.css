@@ -1,6 +1,7 @@
 .input-search{
   height: 50px;
-  width: 50px;
+  width: 500px;
+  border-radius: 0px;
   border-style: none;
   padding: 10px;
   font-size: 18px;
@@ -8,18 +9,10 @@
   outline: none;
   border-radius: 25px;
   transition: all .5s ease-in-out;
-  background-image: url({% static 'core/img/search.png'%});
+  background-image: url('../img/search.png');
   background-size: 50px 50px;
   background-repeat: no-repeat;
   padding-right: 40px;
-}
-
-.input-search:focus{
-  width: 500px;
-  border-radius: 0px;
-  background-color: #FCF2F0;
-  border-bottom:1px solid rgba(255,255,255,.5);
-  transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
 }
 
 select {

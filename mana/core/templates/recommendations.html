@@ -19,6 +19,10 @@
         padding-right: 40px;
         padding-left: 40px;
       }
+
+      img {
+        width: 30px;
+      }
     </style>
 {% endblock %}
 
@@ -42,6 +46,8 @@
         </div>
 
         <div class="limiter" id="table-recommendations" style="display: none;">
+            <br><br>
+            <h1>Vaga: <span id="nome_vaga"></span></h1>
             <div class="container-table100">
                 <div class="wrap-table100">
                     <div class="table100">
@@ -52,7 +58,8 @@
                                     <th class="column">Mat. acadêmica</th>
                                     <th class="column">Mat. profissional</th>
                                     <th class="column">Linkedin</th>
-                                    <th class="column">Pontuação</th>
+                                    <th class="column">Status</th>
+                                    <th class="column">Score</th>
                                 </tr>
                             </thead>
                             <tbody id="render-data">
@@ -63,27 +70,43 @@
             </div>
         </div>
     </center>
-
 {% endblock %}
 
 {% block js %}
     <script src="{% static 'core/js/jquery.min.js' %}"></script>
 
     <script>
+
+        // Ultilizada para criar as carinhas de happy, neutral e sad
+        var total = 0;
+        var superior = 0;
+        var inferior = 0;
+
+        function calcularExtremos() {
+            superior = total - (total/5);
+            inferior = total/2;
+        }
+
         $(document).ready(function() {
 
-
             $('#select-vaga').on('change', function() {
+
+                $('#nome_vaga').html($('#select-vaga option:selected').text());
 
                 $('#wait').show();
                 $.getJSON('/api/recomendacoes/', {id: $('#select-vaga').val()}, function(data) {
                     $('#table-recommendations').show();
                     $('#search-session').hide();
                     $('#wait').hide();
-                    console.log(data)
 
                     var html = '';
                     for(var i of data) {
+
+                        if(total == 0) {
+                            total = i.total;
+                            calcularExtremos();
+                        }
+
                         html += '<tr>';
                         html += '<td class="column">';
                         html += i.nome;
@@ -97,6 +120,21 @@
                         html += '<td class="column">';
                         html += '<a href="'+i.linkedin_url+'">'+i.linkedin_url+'</a>';
                         html += '</td>';
+                        html += '<td class="column">';
+
+
+
+                        if(i.total > superior)
+                            html += '<img src="{% static 'core/img/happy.png'%}">';
+
+                        if(i.total <= superior && i.total > inferior)
+                            html += '<img src="{% static 'core/img/neutral.png'%}">';
+
+                        if(i.total <= inferior)
+                            html += '<img src="{% static 'core/img/sad.png'%}">';
+
+                        html += '</td>';
+
                         html += '<td class="column">';
                         html += i.total;
                         html += '</td>';
