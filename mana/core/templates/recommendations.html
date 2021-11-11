@@ -123,11 +123,10 @@
                         html += '<td class="column">';
 
 
-
-                        if(i.total > superior)
+                        if(i.total >= superior)
                             html += '<img src="{% static 'core/img/happy.png'%}">';
 
-                        if(i.total <= superior && i.total > inferior)
+                        if(i.total < superior && i.total > inferior)
                             html += '<img src="{% static 'core/img/neutral.png'%}">';
 
                         if(i.total <= inferior)
@@ -136,7 +135,7 @@
                         html += '</td>';
 
                         html += '<td class="column">';
-                        html += i.total;
+                        html += i.total.toFixed(2);
                         html += '</td>';
                         html += '</tr>';
                    }
