@@ -11,5 +11,6 @@ urlpatterns = [
     path('about', views.about, name='about'),
     path('professionals', views.professionals, name='professionals'),
     path('api/recomendacoes/', views.recommendationsapi, name="recommendations_api"),
+    path('api/nps/', views.npsapi, name="nps_api"),
 ]
 

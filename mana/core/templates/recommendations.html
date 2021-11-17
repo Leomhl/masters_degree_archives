@@ -23,6 +23,71 @@
       img {
         width: 30px;
       }
+
+      #nps {
+          background-color: orange;
+          border: none;
+          color: white;
+          padding: 12px 28px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+      }
+
+      #enviar {
+          background-color: orange;
+          border: none;
+          color: white;
+          padding: 8px 18px;
+          text-align: center;
+          text-decoration: none;
+          font-size: 15px;
+          width: 20%;
+      }
+
+        /* The Modal (background) */
+        .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto; /* 15% from the top and centered */
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%; /* Could be more or less, depending on screen size */
+          text-align: center;
+        }
+
+        /* The Close Button */
+        .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .nota {
+          margin-left: 10px;
+        }
     </style>
 {% endblock %}
 
@@ -45,9 +110,12 @@
             </div>
         </div>
 
+
         <div class="limiter" id="table-recommendations" style="display: none;">
             <br><br>
             <h1>Vaga: <span id="nome_vaga"></span></h1>
+            <br><br>
+            <button id="nps">Avaliar recomendação</button>
             <div class="container-table100">
                 <div class="wrap-table100">
                     <div class="table100">
@@ -58,7 +126,7 @@
                                     <th class="column">Mat. acadêmica</th>
                                     <th class="column">Mat. profissional</th>
                                     <th class="column">Linkedin</th>
-                                    <th class="column">Status</th>
+                                    <th class="column">Ranqueamento</th>
                                     <th class="column">Score</th>
                                 </tr>
                             </thead>
@@ -70,6 +138,64 @@
             </div>
         </div>
     </center>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" style="text-align: left;" id="close_modal">&times;</span>
+    <h1>Avaliação da recomendação</h1>
+    <br>
+    <p>Por favor, avalie esta recomendação! Ela é importantíssima para nos <br>permitir entender se de fato o método proposto funciona corretamente!</p>
+    <br><br>
+    <p><b>Dê uma nota para esta recomendação de profissionais:</b></p>
+    <br>
+     <form id="npsForm" >
+         {% csrf_token %}
+        <input type="hidden" id="vaga_id" name="vaga_id">
+        <input type="radio" id="nps0" name="nota" value="0" class="nota">
+        <label for="nps0">0 (Péssima)</label>
+
+        <input type="radio" id="nps1" name="nota" value="1" class="nota">
+        <label for="nps1">1</label>
+
+        <input type="radio" id="nps2" name="nota" value="2" class="nota">
+        <label for="nps2">2</label>
+
+        <input type="radio" id="nps3" name="nota" value="3" class="nota">
+        <label for="nps3">3</label>
+
+        <input type="radio" id="nps4" name="nota" value="4" class="nota">
+        <label for="nps4">4</label>
+
+        <input type="radio" id="nps5" name="nota" value="5" class="nota">
+        <label for="nps5">5</label>
+
+        <input type="radio" id="nps6" name="nota" value="6" class="nota">
+        <label for="nps6">6</label>
+
+        <input type="radio" id="nps7" name="nota" value="7" class="nota">
+        <label for="nps7">7</label>
+
+        <input type="radio" id="nps8" name="nota" value="8" class="nota">
+        <label for="nps8">8</label>
+
+        <input type="radio" id="nps9" name="nota" value="9" class="nota">
+        <label for="nps9">9</label>
+
+        <input type="radio" id="nps10" name="nota" value="10" class="nota">
+        <label for="nps10">10 (Excelente)</label>
+      </form>
+
+      <br>
+      <center>
+        <button id="enviar">Eviar avaliação</button>
+      </center>
+
+  </div>
+
+</div>
 {% endblock %}
 
 {% block js %}
@@ -92,6 +218,7 @@
             $('#select-vaga').on('change', function() {
 
                 $('#nome_vaga').html($('#select-vaga option:selected').text());
+                $('#vaga_id').val($('#select-vaga option:selected').val());
 
                 $('#wait').show();
                 $.getJSON('/api/recomendacoes/', {id: $('#select-vaga').val()}, function(data) {
@@ -141,10 +268,40 @@
                    }
 
                    $('#render-data').append(html);
+                   $('#nps').show();
                 });
             });
 
-            $('#menu-recommendation').addClass('active');
+            $('#nps').click(function() {
+                $('#myModal').show();
+            });
+
+            $('.close').click(function() {
+                $('#myModal').hide();
+            });
+
+            $('#enviar').click(function() {
+                var nota = $("#npsForm input[type='radio']:checked").val();
+                var form = $("#npsForm").serialize();
+                if (nota == undefined || nota == null)
+                    alert('Por favor, informe uma nota!');
+                else {
+                  $.post('/api/nps/', form, function(data) {
+                        if (data.status == 'ok') {
+                            document.getElementById('close_modal').click();
+                            setTimeout(function() {
+                                alert('Avaliação realizada com sucesso! Muito obrigado :)');
+                                $('#nps').hide();
+                            }, 200);
+
+                        }
+                        else {
+                            $('#nps').show();
+                            alert('Houve um erro, tente novamente!');
+                        }
+                  });
+                }
+            });
         });
     </script>
 {% endblock %}

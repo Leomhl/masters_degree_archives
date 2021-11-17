@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 class Cultura(models.Model):
@@ -144,3 +146,16 @@ class Vaga(models.Model):
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE)
+
+class NPS(models.Model):
+
+    def __str__(self):
+        return str(self.nota)
+
+    class Meta:
+        verbose_name = ("Nota")
+        verbose_name_plural = ("Nota")
+
+    vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)
+    nota = models.IntegerField(default=1, validators=[MaxValueValidator(10), MinValueValidator(0)])
+    usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)

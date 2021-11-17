@@ -12,6 +12,7 @@ admin.site.register(Projeto)
 admin.site.register(Premio)
 admin.site.register(RecomendacaoHabilidades)
 admin.site.register(Vaga)
+admin.site.register(NPS)
 
 admin.site.site_header = 'Maná admin'
 admin.site.site_title = 'Admin'

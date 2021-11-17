@@ -23,6 +23,7 @@ def professionals(request):
     profissionais = list(Profissional.objects.values('nome', 'linkedin_url'))
     return render(request, 'professionals.html', {'profissionais': profissionais})
 
+
 # Core of recommendations algorithm
 def recommendationsapi(request):
     # Dados gerais para o cálculo de popularidade
@@ -186,7 +187,6 @@ def recommendationsapi(request):
         grau_profissional = len(profissional['recomendacoes']) + len(profissional['areas_atuacao']) + len(
             profissional['startups']) + len(profissional['projetos']) + len(profissional['premios'])
 
-
         if vaga['maturidade_profissional'] == 3:
             # Sênior
             peso_popularidade = (grau_profissional / (nos_da_rede - 1)) * 1000
@@ -197,7 +197,6 @@ def recommendationsapi(request):
             # Júnior o peso precisa ser 0 para não tornar desleal a competição
             # já que obviamente ele não terá muita conexão com a rede
             peso_popularidade = 0
-
 
         profissionalManaData = {
             'nome': profissional['nome'],
@@ -224,8 +223,10 @@ def recommendationsapi(request):
 
     # Retorno da API
     for candidato in pontuacao:
-        total = candidato['peso_mat_prof'] + candidato['peso_mat_acad'] + candidato['peso_premiacoes'] + candidato['peso_endosso']
-        total += candidato['peso_areas_similares'] + candidato['peso_habilidades'] + candidato['peso_cultura'] + candidato['peso_popularidade']
+        total = candidato['peso_mat_prof'] + candidato['peso_mat_acad'] + candidato['peso_premiacoes'] + candidato[
+            'peso_endosso']
+        total += candidato['peso_areas_similares'] + candidato['peso_habilidades'] + candidato['peso_cultura'] + \
+                 candidato['peso_popularidade']
 
         recomendacao_resultado.append({
             'id': candidato['id'],
@@ -239,3 +240,13 @@ def recommendationsapi(request):
     helpers.quick_sort(recomendacao_resultado, 0, len(recomendacao_resultado) - 1, lambda x, y: x['total'] < y['total'])
 
     return JsonResponse(recomendacao_resultado, safe=False)
+
+
+def npsapi(request):
+    try:
+        nps = NPS(nota=request.POST['nota'], usuario=User.objects.filter(id=request.user.id).first(),
+                  vaga=Vaga.objects.filter(id=request.POST['vaga_id']).first())
+        nps.save()
+        return JsonResponse({'status': 'ok'}, safe=False)
+    except:
+        return JsonResponse({'status': 'error'}, safe=False)
