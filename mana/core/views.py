@@ -18,10 +18,32 @@ def recommendations(request):
     vagas = Vaga.objects.values('id', 'titulo')
     return render(request, 'recommendations.html', {'vagas': vagas})
 
-
 def professionals(request):
     profissionais = list(Profissional.objects.values('nome', 'linkedin_url'))
     return render(request, 'professionals.html', {'profissionais': profissionais})
+
+
+def relatorio_nps(request):
+    npss = list(NPS.objects.values('vaga', 'nota'))
+    vagas = list(Vaga.objects.values('id', 'titulo'))
+
+    for vaga in vagas:
+        vaga['detratores'] = 0
+        vaga['promotores'] = 0
+        vaga['nps'] = 0
+
+        for nps in npss:
+            if nps['vaga'] == vaga['id']:
+
+                if nps['nota'] <= 6:
+                    vaga['detratores'] += nps['vaga']
+
+                if nps['nota'] >= 9:
+                    vaga['promotores'] += nps['vaga']
+
+        vaga['nps'] = (vaga['promotores'] - vaga['detratores']) * 100
+
+    return render(request, 'relatorio_nps.html', {'vagas': vagas})
 
 
 # Core of recommendations algorithm
@@ -216,6 +238,7 @@ def recommendationsapi(request):
             'peso_areas_similares': peso_areas_similares,
             'peso_endosso': len(profissional['recomendacoes']) * 5,
             'peso_popularidade': peso_popularidade
+        #     Tá faltando o profissional da vaga
         }
 
         # Após criar a outra função, utilizar a ordenação com base nos pesos

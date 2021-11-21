@@ -148,9 +148,9 @@ class Vaga(models.Model):
     profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE)
 
 class NPS(models.Model):
-
-    def __str__(self):
-        return str(self.nota)
+    #
+    # def __str__(self):
+    #     return str(self.nota)
 
     class Meta:
         verbose_name = ("Nota")

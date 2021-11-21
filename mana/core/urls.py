@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.recommendations, name='recommendations'),
     path('about', views.about, name='about'),
     path('professionals', views.professionals, name='professionals'),
+    path('relatorio_nps', views.relatorio_nps, name='relatorio_nps'),
     path('api/recomendacoes/', views.recommendationsapi, name="recommendations_api"),
     path('api/nps/', views.npsapi, name="nps_api"),
 ]
