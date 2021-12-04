@@ -24,13 +24,14 @@ def professionals(request):
 
 
 def relatorio_nps(request):
-    npss = list(NPS.objects.values('vaga', 'nota'))
+    npss = list(NPS.objects.values('vaga', 'nota', 'sugestao'))
     vagas = list(Vaga.objects.values('id', 'titulo'))
 
     for vaga in vagas:
         vaga['detratores'] = 0
         vaga['promotores'] = 0
         vaga['nps'] = 0
+        vaga['sugestoes'] = []
 
         for nps in npss:
             if nps['vaga'] == vaga['id']:
@@ -40,6 +41,9 @@ def relatorio_nps(request):
 
                 if nps['nota'] >= 9:
                     vaga['promotores'] += nps['vaga']
+
+                vaga['sugestoes'].append(nps['sugestao'])
+
 
         vaga['nps'] = (vaga['promotores'] - vaga['detratores']) * 100
 
@@ -115,95 +119,94 @@ def recommendationsapi(request):
 
         if vaga['maturidade_profissional'] == 1:
             if profissional['maturidade_profissional'] == 2:
-                peso_mat_prof = -30
+                peso_mat_prof = -25
             elif profissional['maturidade_profissional'] == 3:
                 peso_mat_prof = -50
 
         if vaga['maturidade_profissional'] == 2:
             if profissional['maturidade_profissional'] == 3:
-                peso_mat_prof = -30
+                peso_mat_prof = -25
             elif profissional['maturidade_profissional'] == 1:
                 peso_mat_prof = -50
 
         if (vaga['maturidade_profissional'] == 3):
             if profissional['maturidade_profissional'] == 2:
-                peso_mat_prof = -30
+                peso_mat_prof = -25
             elif profissional['maturidade_profissional'] == 1:
                 peso_mat_prof = -50
 
         # Maturidade acadêmica correta para a vaga
         if profissional['maturidade_academica'] == vaga['maturidade_academica']:
-            peso_mat_acad = 50
+            peso_mat_acad = 25
 
         # Testa se a maturidade é a mais baixa (1), não faz sentido recomendar um pós graduado pra uma vaga de jr
         elif vaga['maturidade_academica'] == 1:
             if profissional['maturidade_academica'] == 2:
-                peso_mat_acad = 25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] != 1 and profissional['maturidade_academica'] != 2:
-                peso_mat_acad = 0
+                peso_mat_acad = -25
 
         # Testa se a maturidade é a mais alta (5), não faz sentido recomendar um graduado pra uma vaga de referênca/doutor
         elif vaga['maturidade_academica'] == 5:
             if profissional['maturidade_academica'] == 4:
-                peso_mat_acad = 25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] != 5 and profissional['maturidade_academica'] != 4:
-                peso_mat_acad = 0
+                peso_mat_acad = -25
 
         # Caso a maturidade da vaga seja 2
         elif vaga['maturidade_academica'] == 2:
             if profissional['maturidade_academica'] == 1:
-                peso_mat_acad = 6.25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 3:
-                peso_mat_acad = 25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 4:
-                peso_mat_acad = 12.5
+                peso_mat_acad = -25
             elif profissional['maturidade_academica'] == 5:
-                peso_mat_acad = 0
+                peso_mat_acad = -25
 
         # Caso a maturidade da vaga seja 3
         elif vaga['maturidade_academica'] == 3:
             if (profissional['maturidade_academica'] == 1):
-                peso_mat_acad = 0
+                peso_mat_acad = -25
             elif profissional['maturidade_academica'] == 2:
-                peso_mat_acad = 6.25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 4:
-                peso_mat_acad = 25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 5:
-                peso_mat_acad = 12.5
+                peso_mat_acad = -25
 
         # Caso a maturidade da vaga seja 4
         elif vaga['maturidade_academica'] == 4:
             if profissional['maturidade_academica'] == 5:
-                peso_mat_acad = 25
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 3:
-                peso_mat_acad = 12.5
+                peso_mat_acad = -12.5
             elif profissional['maturidade_academica'] == 1 or profissional['maturidade_academica'] == 2:
-                peso_mat_acad = 0
+                peso_mat_acad = -25
 
         for vaga_habilidade in vaga['habilidades']:
             for profissional_habilidade in profissional['habilidades']:
                 if (vaga_habilidade == profissional_habilidade):
-                    peso_habilidades += 25
+                    peso_habilidades += 50
 
         # Adaptação de cultura
         if (profissional['cultura'] == vaga['cultura']):
-            peso_cultura = 15
+            peso_cultura = 50
         elif (profissional['cultura'] > vaga['cultura']):
-            peso_cultura = 10
+            peso_cultura = -25
         else:
-            peso_cultura = 5
+            peso_cultura = -25
 
         # Função de conexão
         peso_areas_similares = 0
         peso_popularidade = 0
         grau_profissional = 0
-        nos_da_rede = 100  # fazer um somatório de tudo
 
         # Áreas de atuação similares
         for vaga_area in vaga['areas_atuacao']:
             for profissional_area in profissional['areas_atuacao']:
                 if (vaga_area == profissional_area):
-                    peso_areas_similares += 10
+                    peso_areas_similares += 35
 
         nos_da_rede = areas_total + habilidades_total + projetos_total + premios_total + endossos_total
         grau_profissional = len(profissional['recomendacoes']) + len(profissional['areas_atuacao']) + len(
@@ -211,14 +214,22 @@ def recommendationsapi(request):
 
         if vaga['maturidade_profissional'] == 3:
             # Sênior
-            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) * 1000
+            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) / 10
         elif vaga['maturidade_profissional'] == 2:
             # Pleno
-            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) * 500
+            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) / 5
         else:
             # Júnior o peso precisa ser 0 para não tornar desleal a competição
             # já que obviamente ele não terá muita conexão com a rede
-            peso_popularidade = 0
+            peso_popularidade = (grau_profissional / (nos_da_rede - 1))
+
+        # print('############### Grau do profissional {}'.format(grau_profissional))
+        # print('Nós da rede {}'.format(nos_da_rede))
+        # print('Peso popularidade {}'.format(peso_popularidade))
+        # print('Peso sem coeficiente {}'.format((grau_profissional / (nos_da_rede - 1))))
+        # print('Maturidade do profissional {}'.format(profissional['maturidade_profissional']))
+        # print('Maturidade profissional {}'.format(vaga['maturidade_profissional']))
+        # print('###############')
 
         profissionalManaData = {
             'nome': profissional['nome'],
@@ -236,9 +247,8 @@ def recommendationsapi(request):
 
             # Função de conexão
             'peso_areas_similares': peso_areas_similares,
-            'peso_endosso': len(profissional['recomendacoes']) * 5,
+            'peso_endosso': len(profissional['recomendacoes']) * 30,
             'peso_popularidade': peso_popularidade
-        #     Tá faltando o profissional da vaga
         }
 
         # Após criar a outra função, utilizar a ordenação com base nos pesos
@@ -261,13 +271,12 @@ def recommendationsapi(request):
         })
 
     helpers.quick_sort(recomendacao_resultado, 0, len(recomendacao_resultado) - 1, lambda x, y: x['total'] < y['total'])
-
     return JsonResponse(recomendacao_resultado, safe=False)
 
 
 def npsapi(request):
     try:
-        nps = NPS(nota=request.POST['nota'], usuario=User.objects.filter(id=request.user.id).first(),
+        nps = NPS(nota=request.POST['nota'], sugestao=request.POST['sugestao'], usuario=User.objects.filter(id=request.user.id).first(),
                   vaga=Vaga.objects.filter(id=request.POST['vaga_id']).first())
         nps.save()
         return JsonResponse({'status': 'ok'}, safe=False)

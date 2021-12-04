@@ -35,9 +35,6 @@ class Startup(models.Model):
         verbose_name_plural = ("Startups")
 
     nome = models.CharField(max_length=255)
-    area = models.ForeignKey(AreaAtuacao, on_delete=models.CASCADE)
-    # cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
-
 
 class Projeto(models.Model):
     def __str__(self):
@@ -145,12 +142,8 @@ class Vaga(models.Model):
     maturidade_profissional = models.ForeignKey(MaturidadeProfissional, on_delete=models.CASCADE)
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
-    profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE)
 
 class NPS(models.Model):
-    #
-    # def __str__(self):
-    #     return str(self.nota)
 
     class Meta:
         verbose_name = ("Nota")
@@ -158,4 +151,5 @@ class NPS(models.Model):
 
     vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)
     nota = models.IntegerField(default=1, validators=[MaxValueValidator(10), MinValueValidator(0)])
+    sugestao = models.CharField(max_length=500, default='')
     usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)

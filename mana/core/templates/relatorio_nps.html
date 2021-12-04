@@ -26,7 +26,7 @@
 <center>
     <div class="limiter">
         <br><br>
-        <h1>NPS das recomendações</h1>
+        <h1>NPS das recomendações e sugestões</h1>
         <br><br>
 
         <div class="container-table100">
@@ -65,10 +65,35 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+     <div class="container-table100">
+        <div class="wrap-table100">
+            <div class="table100">
+                <table>
+                    <thead>
+                        <tr class="table100-head">
+                            <th class="column">Vaga</th>
+                            <th class="column">Sugestões</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vaga in vagas %}
+                            {% for sugestao in vaga.sugestoes %}
+                                <tr>
+                                    <td class="column">{{ vaga.titulo }}</td>
+                                    <td class="column">{{ sugestao }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
