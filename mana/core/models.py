@@ -143,6 +143,7 @@ class Vaga(models.Model):
     areas_atuacao = models.ManyToManyField(AreaAtuacao)
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
 
+# Depreciado
 class NPS(models.Model):
 
     class Meta:
@@ -153,3 +154,16 @@ class NPS(models.Model):
     nota = models.IntegerField(default=1, validators=[MaxValueValidator(10), MinValueValidator(0)])
     sugestao = models.CharField(max_length=500, default='')
     usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+class Experimento(models.Model):
+    recomendaria = models.BooleanField(null=True, default=True)
+    sugestao = models.TextField(null=True, default='')
+    recrutador = models.CharField(null=True, max_length=255, default='')
+
+class Notas(models.Model):
+    experimento = models.ForeignKey(Experimento, on_delete=models.DO_NOTHING)
+    profissional = models.ForeignKey(Profissional, on_delete=models.DO_NOTHING)
+    nota = models.IntegerField(null=True, default=0)
+    contrataria = models.BooleanField(null=True, default=True)
+    posicao_lista = models.IntegerField(null=True, default=0)
+    vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)

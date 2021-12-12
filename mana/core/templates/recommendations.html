@@ -24,7 +24,7 @@
         width: 30px;
       }
 
-      #nps {
+      .btn-mana {
           background-color: orange;
           border: none;
           color: white;
@@ -88,34 +88,68 @@
         .nota {
           margin-left: 10px;
         }
+
+        li {
+        font-size: 13px;
     </style>
 {% endblock %}
 
 {% block content %}
     <center>
-        <div class="search-box" id="search-session" style="margin-top: 150px;">
-            <select class="input-search" id="select-vaga">
-                <option value="">Toque aqui e selecione uma vaga</option>
 
-                {% for vaga in vagas %}
-                    <option value="{{ vaga.id }}">{{ vaga.titulo }}</option>
-                {% endfor %}
+        <div class="" id="terms-session" style="margin-top: 30px;">
+            <h2>Experimento de mestrado</h2>
+            <br>
 
-            </select>
-            <div id="wait" style="display:none;">
-                <br>
-                <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">
-                <br>
-                Aguarde, buscando candidatos...
-            </div>
+            <textarea name="" id="" cols="30" rows="8"  style="width: 70%; text-align: justify;" readonly>
+                Este é um experimento de mestrado conduzido por Leonardo Herdy Marinho (mestrando na Universidade federal do Rio de Janeiro), sua orientadora Mônica Ferreira da Silva e coorientadora Jonice de Oliveira Sampaio.Visamos nesta etapa da nossa pesquisa validar um novo método de recomendações de profissionais de tecnologia à recrutadores deste ramo. O nosso método atua com análise de redes sociais, utilização de dados públicos do perfil social dos profissionais e analisamos novos elementos como a cultura que o profissional melhor se adapta para trabalhar, premiações, endossos de outros profissionais e afins. Prosseguindo para analisar as recomendações que criamos para cada vaga entendemos que você é uma pessoa de recrutamento (rh/gestor/CTO/similares) que atua em uma empresa de tecnologia e participa ativamente de processos seletivos para a contratação de profissionais que atuam com tecnologia. Esta plataforma foi pensada para ser utilizada em computadores, por favor não utilize smartphone ou tablet para conduzir o experimento. Nenhum dado da sua avaliação será disponibilizado de maneira pública em forma de artigo científico ou similar sem antes ser anonimizado. Coletamos o seu nome apenas para fins de contato caso necessário.
+            </textarea>
+
+            <p>Veja como avaliar as recomendações: <br><a href="https://www.youtube.com/" target="_blank" style="color: orange;">https://www.youtube.com/</a></p>
+
+            <br>
+
+            <form id="nome_recrutador">
+                {% csrf_token %}
+                <label for="recrutador">Seu nome</label>
+                <input type="text" name="recrutador" id="recrutador">
+            </form>
+
+
+            <button class="btn-mana" id="iniciar_recomendacao" style="margin-left: 20px;">Iniciar recomendações</button>
         </div>
 
+<!--        <div class="search-box" id="search-session" style="margin-top: 150px;">-->
+<!--            <h2>Selecione uma vaga que você ainda não avaliou</h2>-->
+<!--            <br><br>-->
+<!--            <select class="input-search" id="select-vaga">-->
+<!--                <option value="">Toque aqui e selecione uma vaga</option>-->
+
+<!--                {% for vaga in vagas %}-->
+<!--                    <option value="{{ vaga.id }}">{{ vaga.titulo }}</option>-->
+<!--                {% endfor %}-->
+
+<!--            </select>-->
+<!--            <div id="wait" style="display:none;">-->
+<!--                <br>-->
+<!--                <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">-->
+<!--                <br>-->
+<!--                Aguarde, buscando candidatos...-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div id="wait" style="display:none;">
+            <br>
+            <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">
+            <br>
+            Aguarde, buscando candidatos...
+        </div>
 
         <div class="limiter" id="table-recommendations" style="display: none;">
             <br><br>
-            <h1>Vaga: <span id="nome_vaga"></span></h1>
-            <br><br>
-            <button id="nps">Avaliar recomendação</button>
+            <h2>Vaga: <span id="nome_vaga"></span></h2>
+            <p>Veja como avaliar as recomendações: <br><a href="https://www.youtube.com/" target="_blank" style="color: orange;">https://www.youtube.com/</a></p>
+
             <div class="container-table100">
                 <div class="wrap-table100">
                     <div class="table100">
@@ -123,11 +157,9 @@
                             <thead>
                                 <tr class="table100-head">
                                     <th class="column">Nome</th>
-                                    <th class="column">Mat. acadêmica</th>
-                                    <th class="column">Mat. profissional</th>
-                                    <th class="column">Linkedin</th>
-                                    <th class="column">Ranqueamento</th>
+                                    <th class="column">Ranquing</th>
                                     <th class="column">Score</th>
+                                    <th class="column">Avaliar</th>
                                 </tr>
                             </thead>
                             <tbody id="render-data">
@@ -145,14 +177,27 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close" style="text-align: left;" id="close_modal">&times;</span>
-    <h1>Avaliação da recomendação</h1>
+    <h3>Avaliação da recomendação</h3>
+    <p>Por favor, avalie esta recomendação com base na vaga e perfil do candidato!</p>
     <br>
-    <p>Por favor, avalie esta recomendação! Ela é importantíssima para nos <br>permitir entender se de fato o método proposto funciona corretamente!</p>
-    <br><br>
-    <p><b>Dê uma nota para esta recomendação de profissionais:</b></p>
-    <br>
-     <form id="npsForm" >
-         {% csrf_token %}
+
+    <div>
+        <div style="text-align: left;" id="modal_dados_vaga">
+
+        </div>
+
+        <div style="text-align: left;" id="modal_dados_candidato">
+
+        </div>
+    </div>
+
+    <form id="npsForm" >
+        {% csrf_token %}
+
+        <p>
+            <b>Em uma escala de 0 a 10, o quão próximo este candidato está de preencher os requisitos da vaga?</b>
+        </p>
+
         <input type="hidden" id="vaga_id" name="vaga_id">
         <input type="radio" id="nps0" name="nota" value="0" class="nota">
         <label for="nps0">0 (Péssima)</label>
@@ -187,19 +232,42 @@
         <input type="radio" id="nps10" name="nota" value="10" class="nota">
         <label for="nps10">10 (Excelente)</label>
 
-         <br><br><br>
-         <label for="sugestao">
-             <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar a recomendação?</b>
-         </label>
-         <br>
-         <textarea id="sugestao" name="sugestao" rows="5" style="width: 100%"></textarea>
-      </form>
+        <br>
+        <!--         <p>-->
+        <!--             <b>Com base nos resultados, você recomendaria este método de recomendação de candidatos?</b>-->
+        <!--         </p>-->
 
-      <br>
-      <center>
-        <button id="enviar">Eviar avaliação</button>
-      </center>
+        <!--        <input type="radio" id="sn1" name="nota" value="1" class="nota">-->
+        <!--        <label for="nps9">Sim</label>-->
 
+        <!--        <input type="radio" id="sn2" name="nota" value="0" class="nota">-->
+        <!--        <label for="nps10">Não</label>-->
+        <br>
+        <p>
+            <b>Caso você estivesse com uma ou mais vagas iguais a esta, você contrataria este candidato para ela?</b>
+        </p>
+
+        <input type="radio" id="contrataria1" name="contrataria" value="1" class="contrataria">
+        <label for="nps9">Sim</label>
+
+        <input type="radio" id="contrataria2" name="contrataria" value="0" class="contrataria">
+        <label for="nps10">Não</label>
+
+        <!--        <br><br>-->
+        <!--        <label for="sugestao">-->
+        <!--            <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar a recomendação?</b>-->
+        <!--        </label>-->
+        <!--        <br>-->
+        <!--        <textarea id="sugestao" name="sugestao" rows="5" style="width: 100%"></textarea>-->
+        <br>
+        <center>
+            <div id="enviar">Eviar avaliação</div>
+        </center>
+    </form>
+
+      <input type="hidden" id="experimento_id">
+      <input type="hidden" id="dados_vagas">
+      <input type="hidden" id="vaga_atual">
   </div>
 
 </div>
@@ -220,95 +288,199 @@
             inferior = total/2;
         }
 
-        $(document).ready(function() {
+        function abrirAvaliacao(usuario) {
 
-            $('#select-vaga').on('change', function() {
+                var html = '<h5>Candidato: '+ usuario['nome'] +'</h5>';
+                html += '<p>';
+                html += '<ol>';
+                html += '<li><b>Maturidade acadêmica:</b> '+ usuario['maturidade_academica'] +'</li>';
+                html += '<li><b>Maturidade profissional:</b> '+ usuario['maturidade_profissional'] +'</li>';
 
-                $('#nome_vaga').html($('#select-vaga option:selected').text());
-                $('#vaga_id').val($('#select-vaga option:selected').val());
+                // var habilidades = '';
 
-                $('#wait').show();
-                $.getJSON('/api/recomendacoes/', {id: $('#select-vaga').val()}, function(data) {
-                    $('#table-recommendations').show();
-                    $('#search-session').hide();
-                    $('#wait').hide();
+ //                for(var j = 0; j < dados_vagas[i]['habilidades'].length; j++) {
+ //                    habilidades += dados_vagas[i]['habilidades'][j];
 
-                    var html = '';
-                    for(var i of data) {
+ //                     if(j !=  dados_vagas[i]['habilidades'].length -1)
+ //                        habilidades += ', ';
+ //                }
 
-                        if(total == 0) {
-                            total = i.total;
-                            calcularExtremos();
+ //                html += '<li><b>Habilidades:</b> '+ habilidades +'</li>';
+
+ //                var areas_atuacao = '';
+ //                for(var j = 0; j < dados_vagas[i]['areas_atuacao'].length; j++) {
+ //                    areas_atuacao += dados_vagas[i]['areas_atuacao'][j];
+
+ //                     if(j !=  dados_vagas[i]['areas_atuacao'].length -1)
+ //                        areas_atuacao += ', ';
+ //                }
+
+ //                html += '<li><b>Areas atuacao:</b> '+ areas_atuacao +'</li>';
+ //                html += '<li><b>Cultura:</b> '+ dados_vagas[i]['cultura'] +'</li>';
+
+                html += '</ol>';
+                html += '</p>';
+
+                $('#modal_dados_candidato').html('').append(html);
+
+
+            $('#myModal').show();
+        }
+
+        function recomendar() {
+            var vaga_atual = $('#vaga_atual').val();
+            var dados_vagas = JSON.parse($('#dados_vagas').val());
+
+            $('#wait').show();
+
+            $.getJSON('/api/recomendacoes/', {id: vaga_atual}, function(data) {
+
+                var html = '';
+                for(var i of data) {
+
+                    if(total == 0) {
+                        total = i.total;
+                        calcularExtremos();
+                    }
+
+                    html += '<tr>';
+                    html += '<td class="column">';
+                    html += i.nome;
+                    html += '</td>';
+                    html += '<td class="column">';
+
+                    if(i.total >= superior)
+                        html += '<img src="{% static 'core/img/happy.png'%}">';
+
+                    if(i.total < superior && i.total > inferior)
+                        html += '<img src="{% static 'core/img/neutral.png'%}">';
+
+                    if(i.total <= inferior)
+                        html += '<img src="{% static 'core/img/sad.png'%}">';
+
+                    html += '</td>';
+
+                    html += '<td class="column">';
+                    html += i.total.toFixed(2);
+                    html += '</td>';
+                    html += '<td class="column">';
+                    html += "<div onclick='abrirAvaliacao("+JSON.stringify(i)+")'>";
+                    html += '<img  src="{% static 'core/img/star.png'%}">';
+                    html += '</div>';
+                    html += '</td>';
+                    html += '</tr>';
+               }
+
+                $('#render-data').html('');
+                $('#render-data').append(html);
+
+                $('#table-recommendations').show();
+                $('#wait').hide();
+
+                var proximo = 0;
+
+                for(var i = 0; i < dados_vagas.length; i++) {
+
+                    if(dados_vagas[i]['id'] == vaga_atual) {
+                        proximo = 1;
+
+                        var html = '<h5>Vaga: '+ dados_vagas[i]['titulo'] +'</h5>';
+                        html += '<p>';
+                        html += '<ol>';
+                        html += '<li><b>Maturidade acadêmica:</b> '+ dados_vagas[i]['maturidade_academica'] +'</li>';
+                        html += '<li><b>Maturidade profissional:</b> '+ dados_vagas[i]['maturidade_profissional'] +'</li>';
+
+                        var habilidades = '';
+
+                        for(var j = 0; j < dados_vagas[i]['habilidades'].length; j++) {
+                            habilidades += dados_vagas[i]['habilidades'][j];
+
+                             if(j !=  dados_vagas[i]['habilidades'].length -1)
+                                habilidades += ', ';
                         }
 
-                        html += '<tr>';
-                        html += '<td class="column">';
-                        html += i.nome;
-                        html += '</td>';
-                        html += '<td class="column">';
-                        html += i.maturidade_academica;
-                        html += '</td>';
-                        html += '<td class="column">';
-                        html += i.maturidade_profissional;
-                        html += '</td>';
-                        html += '<td class="column">';
-                        html += '<a href="'+i.linkedin_url+'">'+i.linkedin_url+'</a>';
-                        html += '</td>';
-                        html += '<td class="column">';
+                        html += '<li><b>Habilidades:</b> '+ habilidades +'</li>';
 
+                        var areas_atuacao = '';
+                        for(var j = 0; j < dados_vagas[i]['areas_atuacao'].length; j++) {
+                            areas_atuacao += dados_vagas[i]['areas_atuacao'][j];
 
-                        if(i.total >= superior)
-                            html += '<img src="{% static 'core/img/happy.png'%}">';
+                             if(j !=  dados_vagas[i]['areas_atuacao'].length -1)
+                                areas_atuacao += ', ';
+                        }
 
-                        if(i.total < superior && i.total > inferior)
-                            html += '<img src="{% static 'core/img/neutral.png'%}">';
+                        html += '<li><b>Areas atuacao:</b> '+ areas_atuacao +'</li>';
+                        html += '<li><b>Cultura:</b> '+ dados_vagas[i]['cultura'] +'</li>';
+                        html += '</ol>';
+                        html += '</p>';
 
-                        if(i.total <= inferior)
-                            html += '<img src="{% static 'core/img/sad.png'%}">';
+                        $('#modal_dados_vaga').html('').append(html);
+                    }
 
-                        html += '</td>';
+                    if(proximo == 1) {
+                        $('#vaga_atual').val(dados_vagas[i]['id']);
+                        proximo = 0;
+                    }
+                }
+            });
+        }
 
-                        html += '<td class="column">';
-                        html += i.total.toFixed(2);
-                        html += '</td>';
-                        html += '</tr>';
-                   }
+        $(document).ready(function() {
 
-                   $('#render-data').append(html);
-                   $('#nps').show();
-                });
+            $('#iniciar_recomendacao').on('click', function() {
+
+                if($('#recrutador').val().length == 0)
+                    alert('Por favor informe o seu nome');
+                else {
+                    var form = $("#nome_recrutador").serialize();
+                    $.post('/api/experimento/', form, function(data) {
+                        $('#experimento_id').val(data.experimento_id);
+
+                        $.getJSON('/api/vagas/', function(vagas) {
+                            $('#vaga_atual').val(vagas[0]['id']);
+                            $('#dados_vagas').val(JSON.stringify(vagas));
+                            $('#terms-session').hide();
+                            recomendar();
+                        });
+                    });
+                }
             });
 
-            $('#nps').click(function() {
-                $('#myModal').show();
-            });
 
             $('.close').click(function() {
                 $('#myModal').hide();
             });
 
             $('#enviar').click(function() {
-                var nota = $("#npsForm input[type='radio']:checked").val();
+                var nota = $("#npsForm input:radio[name='nota']:checked").val();
+                var contrataria = $("#npsForm input:radio[name='contrataria']:checked").val();
+
                 var form = $("#npsForm").serialize();
-                if (nota == undefined || nota == null)
-                    alert('Por favor, informe uma nota!');
+                //form += '&'
+
+                // TODO: continuar daqui. Tem que terminar de preencher os dados de candidato necessários na modal
+                // e integrar com o salvar nota
+
+
+                if ((nota == undefined || nota == null) && (contrataria == null || contrataria == undefined))
+                    alert('Por favor, informe uma resposta para a nota e se você contrataria este candidato!');
                 else {
-                  $.post('/api/nps/', form, function(data) {
+                  $.post('/api/nota/', form, function(data) {
                         if (data.status == 'ok') {
                             document.getElementById('close_modal').click();
                             setTimeout(function() {
                                 alert('Avaliação realizada com sucesso! Muito obrigado :)');
-                                $('#nps').hide();
+                                //$('#nps').hide();
                             }, 200);
-
                         }
                         else {
-                            $('#nps').show();
                             alert('Houve um erro, tente novamente!');
                         }
                   });
                 }
             });
+
+            $('#menu-recommendation').addClass('active');
         });
     </script>
 {% endblock %}

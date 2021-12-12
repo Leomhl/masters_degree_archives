@@ -1,3 +1,4 @@
+from MySQLdb import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.core import serializers
@@ -17,6 +18,7 @@ def about(request):
 def recommendations(request):
     vagas = Vaga.objects.values('id', 'titulo')
     return render(request, 'recommendations.html', {'vagas': vagas})
+
 
 def professionals(request):
     profissionais = list(Profissional.objects.values('nome', 'linkedin_url'))
@@ -43,7 +45,6 @@ def relatorio_nps(request):
                     vaga['promotores'] += nps['vaga']
 
                 vaga['sugestoes'].append(nps['sugestao'])
-
 
         vaga['nps'] = (vaga['promotores'] - vaga['detratores']) * 100
 
@@ -271,12 +272,188 @@ def recommendationsapi(request):
         })
 
     helpers.quick_sort(recomendacao_resultado, 0, len(recomendacao_resultado) - 1, lambda x, y: x['total'] < y['total'])
+
+    indice = 1
+    for i in recomendacao_resultado:
+        i['posicao_lista'] = indice
+        indice = indice + 1
+
     return JsonResponse(recomendacao_resultado, safe=False)
+
+
+def vagaapi(request):
+    try:
+        vagas_temp = Vaga.objects.all()
+        tmpJson = serializers.serialize("json", vagas_temp)
+        vagas_temp = json.loads(tmpJson)
+        vagas = []
+
+        for vaga in vagas_temp:
+            vaga['fields']['id'] = vaga['pk']
+            vagas.append(vaga['fields'])
+
+        # Dados das maturidades acadêmicas
+        mat_academica_temp = MaturidadeAcademica.objects.all()
+        tmpJson = serializers.serialize("json", mat_academica_temp)
+        mat_academica_temp = json.loads(tmpJson)
+        mat_academica = []
+
+        for mat_acad in mat_academica_temp:
+            mat_academica.append({
+                'id': mat_acad['pk'],
+                'nome': mat_acad['fields']['nome']
+            })
+
+        # Dados das maturidades profissionais
+        mat_profissional_temp = MaturidadeProfissional.objects.all()
+        tmpJson = serializers.serialize("json", mat_profissional_temp)
+        mat_profissional_temp = json.loads(tmpJson)
+        mat_profissional = []
+
+        for mat_prof in mat_profissional_temp:
+            mat_profissional.append({
+                'id': mat_prof['pk'],
+                'nome': mat_prof['fields']['nome']
+            })
+
+        # Dados das áreas de atuação
+        area_atuacao_temp = AreaAtuacao.objects.all()
+        tmpJson = serializers.serialize("json", area_atuacao_temp)
+        area_atuacao_temp = json.loads(tmpJson)
+        areas_atuacao = []
+
+        for area_atuacao in area_atuacao_temp:
+            areas_atuacao.append({
+                'id': area_atuacao['pk'],
+                'nome': area_atuacao['fields']['nome']
+            })
+
+        # Dados das habilidades
+        habilidades_temp = Habilidade.objects.all()
+        tmpJson = serializers.serialize("json", habilidades_temp)
+        habilidades_temp = json.loads(tmpJson)
+        habilidades = []
+
+        for habilidade in habilidades_temp:
+            habilidades.append({
+                'id': habilidade['pk'],
+                'nome': habilidade['fields']['nome']
+            })
+
+        # Dados das culturas
+        culturas_temp = Cultura.objects.all()
+        tmpJson = serializers.serialize("json", culturas_temp)
+        culturas_temp = json.loads(tmpJson)
+        culturas = []
+
+        for cultura in culturas_temp:
+            culturas.append({
+                'id': cultura['pk'],
+                'nome': cultura['fields']['nome']
+            })
+
+
+        resultado = []
+
+        for vaga in vagas:
+
+            obj_vaga_temp = {
+                'id': vaga['id'],
+                'titulo': vaga['titulo'],
+                'maturidade_profissional': '',
+                'maturidade_academica': '',
+                'habilidades': [],
+                'areas_atuacao': [],
+                'cultura': '',
+            }
+
+            habilidades_temp = []
+            areas_atuacao_temp = []
+
+            for mat_acad in mat_academica:
+                if vaga['maturidade_academica'] == mat_acad['id']:
+                    obj_vaga_temp['maturidade_academica'] = mat_acad['nome']
+
+            for mat_prof in mat_profissional:
+
+                if vaga['maturidade_profissional'] == mat_prof['id']:
+                    obj_vaga_temp['maturidade_profissional'] = mat_prof['nome']
+
+            for cultura in culturas:
+                if vaga['cultura'] == cultura['id']:
+                    obj_vaga_temp['cultura'] = cultura['nome']
+
+            for cultura in culturas:
+                if vaga['cultura'] == cultura['id']:
+                    obj_vaga_temp['cultura'] = cultura['nome']
+
+
+            for habilidade in habilidades:
+                for vaga_hab in vaga['habilidades']:
+                    if vaga_hab == habilidade['id']:
+                        habilidades_temp.append(habilidade['nome'])
+
+            for area in areas_atuacao:
+                for vaga_area in vaga['areas_atuacao']:
+                    if vaga_area == area['id']:
+                        areas_atuacao_temp.append(area['nome'])
+
+            obj_vaga_temp['habilidades'] = habilidades_temp
+            obj_vaga_temp['areas_atuacao'] = areas_atuacao_temp
+            resultado.append(obj_vaga_temp)
+
+
+        return JsonResponse(resultado, safe=False)
+    except IntegrityError as e:
+        return JsonResponse({'status': 'erro', 'message': e.message}, safe=False)
+
+
+def expetimentoapi(request):
+    try:
+
+        experimento = Experimento.objects.filter(id=request.POST.get('experimento_id', False))
+        recomendaria = request.POST.get('recomendaria', False)
+        sugestao = request.POST.get('sugestao', False)
+        recrutador = request.POST.get('recrutador', False)
+        id = ''
+
+        if experimento:
+            experimento.update(recomendaria=recomendaria, sugestao=sugestao, recrutador=recrutador)
+            id = request.POST.get('experimento_id', False)
+        else:
+            experimento = Experimento(recomendaria=recomendaria, sugestao=sugestao, recrutador=recrutador)
+            experimento.save()
+            id = experimento.id
+
+        return JsonResponse({'status': 'ok', 'experimento_id': id}, safe=False)
+    except IntegrityError as e:
+        return JsonResponse({'status': 'erro', 'message': e.message}, safe=False)
+
+
+def notaapi(request):
+    try:
+
+        profissional = Profissional.objects.filter(id=request.POST.get('profissional_id', False))
+        nota = request.POST.get('nota', False)
+        contrataria = request.POST.get('contrataria', False)
+        posicao_lista = request.POST.get('posicao_lista', False)
+        experimento_id = Experimento.objects.filter(id=request.POST.get('experimento_id', False))
+        profissional_id = Profissional.objects.filter(id=request.POST.get('profissional_id', False))
+        vaga_id = Vaga.objects.filter(id=request.POST.get('vaga_id', False))
+
+        nota = Notas(profissional=profissional, nota=nota, contrataria=contrataria, posicao_lista=posicao_lista,
+                     experimento_id=experimento_id, profissional_id=profissional_id, vaga_id=vaga_id)
+        nota.save()
+
+        return JsonResponse({'status': 'ok'}, safe=False)
+    except IntegrityError as e:
+        return JsonResponse({'status': 'erro', 'message': e.message}, safe=False)
 
 
 def npsapi(request):
     try:
-        nps = NPS(nota=request.POST['nota'], sugestao=request.POST['sugestao'], usuario=User.objects.filter(id=request.user.id).first(),
+        nps = NPS(nota=request.POST['nota'], sugestao=request.POST['sugestao'],
+                  usuario=User.objects.filter(id=request.user.id).first(),
                   vaga=Vaga.objects.filter(id=request.POST['vaga_id']).first())
         nps.save()
         return JsonResponse({'status': 'ok'}, safe=False)
