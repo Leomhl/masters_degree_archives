@@ -151,13 +151,12 @@
             <p>Veja como avaliar as recomendações: <br><a href="https://www.youtube.com/" target="_blank" style="color: orange;">https://www.youtube.com/</a></p>
 
             <div class="container-table100">
-                <div class="wrap-table100">
+                <div class="wrap-table100" style="width: 100%">
                     <div class="table100">
                         <table>
                             <thead>
                                 <tr class="table100-head">
                                     <th class="column">Nome</th>
-                                    <th class="column">Ranquing</th>
                                     <th class="column">Score</th>
                                     <th class="column">Avaliar</th>
                                 </tr>
@@ -181,24 +180,18 @@
     <p>Por favor, avalie esta recomendação com base na vaga e perfil do candidato!</p>
     <br>
 
-    <div>
-        <div style="text-align: left;" id="modal_dados_vaga">
-
-        </div>
-
-        <div style="text-align: left;" id="modal_dados_candidato">
-
-        </div>
-    </div>
-
     <form id="npsForm" >
+        <div>
+            <div style="text-align: left;" id="modal_dados_vaga"></div>
+            <div style="text-align: left;" id="modal_dados_candidato"></div>
+        </div>
+
         {% csrf_token %}
 
         <p>
             <b>Em uma escala de 0 a 10, o quão próximo este candidato está de preencher os requisitos da vaga?</b>
         </p>
 
-        <input type="hidden" id="vaga_id" name="vaga_id">
         <input type="radio" id="nps0" name="nota" value="0" class="nota">
         <label for="nps0">0 (Péssima)</label>
 
@@ -264,10 +257,6 @@
             <div id="enviar">Eviar avaliação</div>
         </center>
     </form>
-
-      <input type="hidden" id="experimento_id">
-      <input type="hidden" id="dados_vagas">
-      <input type="hidden" id="vaga_atual">
   </div>
 
 </div>
@@ -275,99 +264,130 @@
 
 {% block js %}
     <script src="{% static 'core/js/jquery.min.js' %}"></script>
-
     <script>
+
+        // Dados globais utilizados
+        var dados_vagas = [];
+        var dados_culturas = [];
+        var dados_habilidades = [];
+        var dados_areas_atuacao = [];
+        var vaga_atual;
+        var experimento_id;
 
         // Ultilizada para criar as carinhas de happy, neutral e sad
         var total = 0;
         var superior = 0;
         var inferior = 0;
 
-        function calcularExtremos() {
-            superior = total - (total/5);
-            inferior = total/2;
-        }
 
         function abrirAvaliacao(usuario) {
 
-                var html = '<h5>Candidato: '+ usuario['nome'] +'</h5>';
-                html += '<p>';
-                html += '<ol>';
-                html += '<li><b>Maturidade acadêmica:</b> '+ usuario['maturidade_academica'] +'</li>';
-                html += '<li><b>Maturidade profissional:</b> '+ usuario['maturidade_profissional'] +'</li>';
+            var html = '<h5>Candidato: '+ usuario['nome'] +'</h5>';
+            html += '<p>';
+            html += '<ol>';
+            html += '<li><b>Maturidade acadêmica:</b> '+ usuario['maturidade_academica'] +'</li>';
+            html += '<li><b>Maturidade profissional:</b> '+ usuario['maturidade_profissional'] +'</li>';
 
-                // var habilidades = '';
+            var habilidades_candidato = '';
 
- //                for(var j = 0; j < dados_vagas[i]['habilidades'].length; j++) {
- //                    habilidades += dados_vagas[i]['habilidades'][j];
+            for(var j = 0; j < usuario['habilidades'].length; j++) {
+                for(var i = 0; i < dados_habilidades.length; i++) {
 
- //                     if(j !=  dados_vagas[i]['habilidades'].length -1)
- //                        habilidades += ', ';
- //                }
+                    if(dados_habilidades[i]['id'] == usuario['habilidades'][j]) {
+                        habilidades_candidato += dados_habilidades[i]['nome'];
 
- //                html += '<li><b>Habilidades:</b> '+ habilidades +'</li>';
+                         if(j != usuario['habilidades'].length -1)
+                            habilidades_candidato += ', ';
+                    }
+                }
+            }
 
- //                var areas_atuacao = '';
- //                for(var j = 0; j < dados_vagas[i]['areas_atuacao'].length; j++) {
- //                    areas_atuacao += dados_vagas[i]['areas_atuacao'][j];
+            html += '<li><b>Habilidades:</b> '+ habilidades_candidato +'</li>';
 
- //                     if(j !=  dados_vagas[i]['areas_atuacao'].length -1)
- //                        areas_atuacao += ', ';
- //                }
+            var areas_candidato = '';
 
- //                html += '<li><b>Areas atuacao:</b> '+ areas_atuacao +'</li>';
- //                html += '<li><b>Cultura:</b> '+ dados_vagas[i]['cultura'] +'</li>';
+            for(var j = 0; j < usuario['areas_atuacao'].length; j++) {
+                for(var i = 0; i < dados_areas_atuacao.length; i++) {
 
-                html += '</ol>';
-                html += '</p>';
+                    if(dados_areas_atuacao[i]['id'] == usuario['areas_atuacao'][j]) {
+                        areas_candidato += dados_areas_atuacao[i]['nome'];
 
-                $('#modal_dados_candidato').html('').append(html);
+                         if(j != usuario['areas_atuacao'].length -1)
+                            areas_candidato += ', ';
+                    }
+                }
+            }
+
+            html += '<li><b>Areas atuacao:</b> '+ areas_candidato +'</li>';
+
+            var cultura_candidato;
+
+            for(var i = 0; i < dados_culturas.length; i++) {
+
+                if(dados_culturas[i]['id'] == usuario['cultura'])
+                    cultura_candidato = dados_culturas[i]['nome'];
+            }
 
 
+            html += '<li><b>Cultura:</b> '+ cultura_candidato +'</li>';
+
+            html += '</ol>';
+            html += '</p>';
+            html += '<input type="hidden" name="posicao_lista" value="'+usuario['posicao_lista']+'">';
+            html += '<input type="hidden" name="profissional_id" id="profissional_id" value="'+usuario['id']+'">';
+
+            $('#modal_dados_candidato').html('').append(html);
             $('#myModal').show();
         }
 
+        // Finalizar isso aqui :D
+        function finalizar() {
+            alert('finalizar :D');
+        }
+
         function recomendar() {
-            var vaga_atual = $('#vaga_atual').val();
-            var dados_vagas = JSON.parse($('#dados_vagas').val());
 
             $('#wait').show();
 
             $.getJSON('/api/recomendacoes/', {id: vaga_atual}, function(data) {
 
                 var html = '';
+
+                // Limita em 10 as pessoas da lista
+                var contador = 0;
+
                 for(var i of data) {
+                    if(contador == 10) {
+                        break;break;break;break;break;break;
+                    }
+
+                    contador += 1;
 
                     if(total == 0) {
                         total = i.total;
-                        calcularExtremos();
+
                     }
 
                     html += '<tr>';
                     html += '<td class="column">';
                     html += i.nome;
                     html += '</td>';
-                    html += '<td class="column">';
-
-                    if(i.total >= superior)
-                        html += '<img src="{% static 'core/img/happy.png'%}">';
-
-                    if(i.total < superior && i.total > inferior)
-                        html += '<img src="{% static 'core/img/neutral.png'%}">';
-
-                    if(i.total <= inferior)
-                        html += '<img src="{% static 'core/img/sad.png'%}">';
-
-                    html += '</td>';
 
                     html += '<td class="column">';
                     html += i.total.toFixed(2);
                     html += '</td>';
-                    html += '<td class="column">';
+                    html += '<td class="column avaliar" id="avaliar_'+i['id']+'">';
                     html += "<div onclick='abrirAvaliacao("+JSON.stringify(i)+")'>";
-                    html += '<img  src="{% static 'core/img/star.png'%}">';
+                    html += '<img src="{% static 'core/img/star.png'%}">';
                     html += '</div>';
                     html += '</td>';
+
+                    html += '<td class="column" style="display: none;" id="avaliado_'+i['id']+'">';
+                    html += "<div>";
+                    html += '<img src="{% static 'core/img/checked.png'%}">';
+                    html += '</div>';
+                    html += '</td>';
+
                     html += '</tr>';
                }
 
@@ -383,6 +403,8 @@
 
                     if(dados_vagas[i]['id'] == vaga_atual) {
                         proximo = 1;
+
+                        $('#nome_vaga').html(dados_vagas[i]['titulo']);
 
                         var html = '<h5>Vaga: '+ dados_vagas[i]['titulo'] +'</h5>';
                         html += '<p>';
@@ -417,12 +439,14 @@
                         $('#modal_dados_vaga').html('').append(html);
                     }
 
+
                     if(proximo == 1) {
-                        $('#vaga_atual').val(dados_vagas[i]['id']);
+                        vaga_atual = dados_vagas[i]['id'];
                         proximo = 0;
                     }
                 }
             });
+
         }
 
         $(document).ready(function() {
@@ -434,12 +458,24 @@
                 else {
                     var form = $("#nome_recrutador").serialize();
                     $.post('/api/experimento/', form, function(data) {
-                        $('#experimento_id').val(data.experimento_id);
+                        experimento_id = data['experimento_id'];
 
-                        $.getJSON('/api/vagas/', function(vagas) {
-                            $('#vaga_atual').val(vagas[0]['id']);
-                            $('#dados_vagas').val(JSON.stringify(vagas));
+                        $.getJSON('/api/dados/', function(dados) {
+
+                            // Dados vagas
+                            vaga_atual = dados['vagas'][0]['id'];
+                            dados_vagas = dados['vagas'];
                             $('#terms-session').hide();
+
+                            // Dados habilidades
+                            dados_habilidades = dados['habilidades'];
+
+                            // Dados habilidades
+                            dados_areas_atuacao = dados['areas_atuacao'];
+
+                            // Dados culturas
+                            dados_culturas = dados['culturas'];
+
                             recomendar();
                         });
                     });
@@ -456,10 +492,8 @@
                 var contrataria = $("#npsForm input:radio[name='contrataria']:checked").val();
 
                 var form = $("#npsForm").serialize();
-                //form += '&'
-
-                // TODO: continuar daqui. Tem que terminar de preencher os dados de candidato necessários na modal
-                // e integrar com o salvar nota
+                form += '&vaga_id='+ vaga_atual;
+                form += '&experimento_id='+ experimento_id;
 
 
                 if ((nota == undefined || nota == null) && (contrataria == null || contrataria == undefined))
@@ -468,10 +502,37 @@
                   $.post('/api/nota/', form, function(data) {
                         if (data.status == 'ok') {
                             document.getElementById('close_modal').click();
-                            setTimeout(function() {
-                                alert('Avaliação realizada com sucesso! Muito obrigado :)');
-                                //$('#nps').hide();
-                            }, 200);
+
+                            $('#avaliado_'+$('#profissional_id').val()).show();
+                            $('#avaliar_'+$('#profissional_id').val()).remove();
+
+                            $("#npsForm input:radio[name='nota']:checked").prop('checked', false);
+                            $("#npsForm input:radio[name='contrataria']:checked").prop('checked', false);
+
+                            // mudar pra 0 esse valor
+                            if($(".avaliar").length == 9) {
+                                var flag = false;
+
+                                if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {
+                                    for(var vaga of dados_vagas) {
+
+                                        if(flag == true) {
+                                            vaga_atual = vaga['id'];
+                                            break;break;
+                                        }
+
+                                        if(vaga_atual == vaga['id']) {
+                                            flag = true;
+                                        } else {
+                                            flag = false;
+                                        }
+                                    }
+
+                                    recomendar();
+                                } else {
+                                    finalizar();
+                                }
+                            }
                         }
                         else {
                             alert('Houve um erro, tente novamente!');

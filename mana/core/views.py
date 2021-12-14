@@ -104,6 +104,7 @@ def recommendationsapi(request):
         profissional['fields']['id'] = profissional['pk']
         profissional = profissional['fields']
 
+
         for recomendacao_habilidade in recomendacoes_habilidades:
             if recomendacao_habilidade['fields']['recomendado'] == profissional['id']:
                 profissional['recomendacoes'] = recomendacao_habilidade['fields']['habilidades']
@@ -249,7 +250,12 @@ def recommendationsapi(request):
             # Função de conexão
             'peso_areas_similares': peso_areas_similares,
             'peso_endosso': len(profissional['recomendacoes']) * 30,
-            'peso_popularidade': peso_popularidade
+            'peso_popularidade': peso_popularidade,
+
+            'habilidades': profissional['habilidades'],
+            'cultura': profissional['cultura'],
+            'areas_atuacao': profissional['areas_atuacao'],
+            'endosso': len(profissional['recomendacoes'])
         }
 
         # Após criar a outra função, utilizar a ordenação com base nos pesos
@@ -265,10 +271,13 @@ def recommendationsapi(request):
         recomendacao_resultado.append({
             'id': candidato['id'],
             'nome': candidato['nome'],
-            'linkedin_url': candidato['linkedin_url'],
             'total': total,
             'maturidade_academica': mat_academica[candidato['maturidade_academica']]['nome'],
-            'maturidade_profissional': mat_profissional[candidato['maturidade_profissional']]['nome']
+            'maturidade_profissional': mat_profissional[candidato['maturidade_profissional']]['nome'],
+            'habilidades': candidato['habilidades'],
+            'cultura': candidato['cultura'],
+            'areas_atuacao': candidato['areas_atuacao'],
+            'endosso': candidato['endosso']
         })
 
     helpers.quick_sort(recomendacao_resultado, 0, len(recomendacao_resultado) - 1, lambda x, y: x['total'] < y['total'])
@@ -281,7 +290,7 @@ def recommendationsapi(request):
     return JsonResponse(recomendacao_resultado, safe=False)
 
 
-def vagaapi(request):
+def dadosapi(request):
     try:
         vagas_temp = Vaga.objects.all()
         tmpJson = serializers.serialize("json", vagas_temp)
@@ -356,7 +365,6 @@ def vagaapi(request):
         resultado = []
 
         for vaga in vagas:
-
             obj_vaga_temp = {
                 'id': vaga['id'],
                 'titulo': vaga['titulo'],
@@ -403,7 +411,13 @@ def vagaapi(request):
             resultado.append(obj_vaga_temp)
 
 
-        return JsonResponse(resultado, safe=False)
+        return JsonResponse({
+            'vagas': resultado,
+            'areas_atuacao': areas_atuacao,
+            'habilidades': habilidades,
+            'culturas': culturas,
+
+        }, safe=False)
     except IntegrityError as e:
         return JsonResponse({'status': 'erro', 'message': e.message}, safe=False)
 
@@ -433,16 +447,18 @@ def expetimentoapi(request):
 def notaapi(request):
     try:
 
-        profissional = Profissional.objects.filter(id=request.POST.get('profissional_id', False))
+        profissional = Profissional.objects.filter(id=request.POST['profissional_id']).first()
+        vaga = Vaga.objects.filter(id=request.POST['vaga_id']).first()
+        experimento = Experimento.objects.filter(id=request.POST['experimento_id']).first()
+
         nota = request.POST.get('nota', False)
         contrataria = request.POST.get('contrataria', False)
         posicao_lista = request.POST.get('posicao_lista', False)
-        experimento_id = Experimento.objects.filter(id=request.POST.get('experimento_id', False))
-        profissional_id = Profissional.objects.filter(id=request.POST.get('profissional_id', False))
-        vaga_id = Vaga.objects.filter(id=request.POST.get('vaga_id', False))
+
+
 
         nota = Notas(profissional=profissional, nota=nota, contrataria=contrataria, posicao_lista=posicao_lista,
-                     experimento_id=experimento_id, profissional_id=profissional_id, vaga_id=vaga_id)
+                     experimento=experimento, vaga=vaga)
         nota.save()
 
         return JsonResponse({'status': 'ok'}, safe=False)

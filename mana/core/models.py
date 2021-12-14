@@ -161,9 +161,10 @@ class Experimento(models.Model):
     recrutador = models.CharField(null=True, max_length=255, default='')
 
 class Notas(models.Model):
-    experimento = models.ForeignKey(Experimento, on_delete=models.DO_NOTHING)
-    profissional = models.ForeignKey(Profissional, on_delete=models.DO_NOTHING)
     nota = models.IntegerField(null=True, default=0)
     contrataria = models.BooleanField(null=True, default=True)
     posicao_lista = models.IntegerField(null=True, default=0)
+
+    experimento = models.ForeignKey(Experimento, on_delete=models.DO_NOTHING)
+    profissional = models.ForeignKey(Profissional, on_delete=models.DO_NOTHING)
     vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)

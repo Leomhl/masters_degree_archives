@@ -14,7 +14,7 @@ urlpatterns = [
     path('api/recomendacoes/', views.recommendationsapi, name="recommendations_api"),
     path('api/experimento/', views.expetimentoapi, name="experimento_api"),
     path('api/nota/', views.notaapi, name="nota_api"),
-    path('api/vagas/', views.vagaapi, name="vaga_api"),
+    path('api/dados/', views.dadosapi, name="dados_api"),
     path('api/nps/', views.npsapi, name="nps_api"),
 ]
 
