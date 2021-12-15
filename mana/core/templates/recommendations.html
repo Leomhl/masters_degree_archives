@@ -35,7 +35,7 @@
           font-size: 16px;
       }
 
-      #enviar {
+      .enviar {
           background-color: orange;
           border: none;
           color: white;
@@ -97,7 +97,7 @@
 {% block content %}
     <center>
 
-        <div class="" id="terms-session" style="margin-top: 30px;">
+        <div id="terms-session" style="margin-top: 30px;">
             <h2>Experimento de mestrado</h2>
             <br>
 
@@ -106,7 +106,6 @@
             </textarea>
 
             <p>Veja como avaliar as recomendações: <br><a href="https://www.youtube.com/" target="_blank" style="color: orange;">https://www.youtube.com/</a></p>
-
             <br>
 
             <form id="nome_recrutador">
@@ -115,28 +114,8 @@
                 <input type="text" name="recrutador" id="recrutador">
             </form>
 
-
             <button class="btn-mana" id="iniciar_recomendacao" style="margin-left: 20px;">Iniciar recomendações</button>
         </div>
-
-<!--        <div class="search-box" id="search-session" style="margin-top: 150px;">-->
-<!--            <h2>Selecione uma vaga que você ainda não avaliou</h2>-->
-<!--            <br><br>-->
-<!--            <select class="input-search" id="select-vaga">-->
-<!--                <option value="">Toque aqui e selecione uma vaga</option>-->
-
-<!--                {% for vaga in vagas %}-->
-<!--                    <option value="{{ vaga.id }}">{{ vaga.titulo }}</option>-->
-<!--                {% endfor %}-->
-
-<!--            </select>-->
-<!--            <div id="wait" style="display:none;">-->
-<!--                <br>-->
-<!--                <img src="{% static 'core/img/loading-buffering.gif'%}" style="width: 30px;">-->
-<!--                <br>-->
-<!--                Aguarde, buscando candidatos...-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div id="wait" style="display:none;">
             <br>
@@ -170,96 +149,125 @@
         </div>
     </center>
 
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close" style="text-align: left;" id="close_modal">&times;</span>
-    <h3>Avaliação da recomendação</h3>
-    <p>Por favor, avalie esta recomendação com base na vaga e perfil do candidato!</p>
-    <br>
-
-    <form id="npsForm" >
-        <div>
-            <div style="text-align: left;" id="modal_dados_vaga"></div>
-            <div style="text-align: left;" id="modal_dados_candidato"></div>
-        </div>
-
-        {% csrf_token %}
-
-        <p>
-            <b>Em uma escala de 0 a 10, o quão próximo este candidato está de preencher os requisitos da vaga?</b>
-        </p>
-
-        <input type="radio" id="nps0" name="nota" value="0" class="nota">
-        <label for="nps0">0 (Péssima)</label>
-
-        <input type="radio" id="nps1" name="nota" value="1" class="nota">
-        <label for="nps1">1</label>
-
-        <input type="radio" id="nps2" name="nota" value="2" class="nota">
-        <label for="nps2">2</label>
-
-        <input type="radio" id="nps3" name="nota" value="3" class="nota">
-        <label for="nps3">3</label>
-
-        <input type="radio" id="nps4" name="nota" value="4" class="nota">
-        <label for="nps4">4</label>
-
-        <input type="radio" id="nps5" name="nota" value="5" class="nota">
-        <label for="nps5">5</label>
-
-        <input type="radio" id="nps6" name="nota" value="6" class="nota">
-        <label for="nps6">6</label>
-
-        <input type="radio" id="nps7" name="nota" value="7" class="nota">
-        <label for="nps7">7</label>
-
-        <input type="radio" id="nps8" name="nota" value="8" class="nota">
-        <label for="nps8">8</label>
-
-        <input type="radio" id="nps9" name="nota" value="9" class="nota">
-        <label for="nps9">9</label>
-
-        <input type="radio" id="nps10" name="nota" value="10" class="nota">
-        <label for="nps10">10 (Excelente)</label>
-
-        <br>
-        <!--         <p>-->
-        <!--             <b>Com base nos resultados, você recomendaria este método de recomendação de candidatos?</b>-->
-        <!--         </p>-->
-
-        <!--        <input type="radio" id="sn1" name="nota" value="1" class="nota">-->
-        <!--        <label for="nps9">Sim</label>-->
-
-        <!--        <input type="radio" id="sn2" name="nota" value="0" class="nota">-->
-        <!--        <label for="nps10">Não</label>-->
-        <br>
-        <p>
-            <b>Caso você estivesse com uma ou mais vagas iguais a esta, você contrataria este candidato para ela?</b>
-        </p>
-
-        <input type="radio" id="contrataria1" name="contrataria" value="1" class="contrataria">
-        <label for="nps9">Sim</label>
-
-        <input type="radio" id="contrataria2" name="contrataria" value="0" class="contrataria">
-        <label for="nps10">Não</label>
-
-        <!--        <br><br>-->
-        <!--        <label for="sugestao">-->
-        <!--            <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar a recomendação?</b>-->
-        <!--        </label>-->
-        <!--        <br>-->
-        <!--        <textarea id="sugestao" name="sugestao" rows="5" style="width: 100%"></textarea>-->
-        <br>
+    <div id="final" style="display: none;">
         <center>
-            <div id="enviar">Eviar avaliação</div>
-        </center>
-    </form>
-  </div>
+            <br>
+            <h2>Última etapa :D</h2>
+            <p>Estamos quase lá!</p>
+            <br><br><br>
+             <p>
+                 <b>Com base nos resultados, você recomendaria este método de recomendação de candidatos?</b>
+             </p>
 
-</div>
+            <form id="form_final">
+                {% csrf_token %}
+
+                <input type="radio" id="recomendaria1" name="recomendaria" value="1" class="nota">
+                <label for="recomendaria1">Sim</label>
+
+                <input type="radio" id="recomendaria2" name="recomendaria" value="0" class="nota">
+                <label for="recomendaria2">Não</label>
+
+                <br><br>
+
+                <label for="sugestao">
+                    <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar a recomendação?</b>
+                </label>
+                <br>
+                <textarea id="sugestao" name="sugestao" rows="5" style="width: 50%"></textarea>
+            </form>
+            <br>
+            <center>
+                <div class="enviar" id="form_final_terminar">Terminar experimento</div>
+            </center>
+        </center>
+        <br><br>
+        <br><br>
+    </div>
+
+    <div id="obrigado" style="display: none;">
+        <center>
+            <br>
+            <h2>Muito obrigado!</h2>
+            <p>As suas respostas foram registradas com sucesso!</p>
+
+            <img src="{% static 'core/img/thanks.webp' %}" style="width: 200px;">
+            
+        </center>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close" style="text-align: left;" id="close_modal">&times;</span>
+        <h3>Avaliação da recomendação</h3>
+        <p>Por favor, avalie esta recomendação com base na vaga e perfil do candidato!</p>
+        <br>
+
+        <form id="npsForm">
+            <div>
+                <div style="text-align: left;" id="modal_dados_vaga"></div>
+                <div style="text-align: left;" id="modal_dados_candidato"></div>
+            </div>
+
+            {% csrf_token %}
+
+            <p>
+                <b>Em uma escala de 0 a 10, o quão próximo este candidato está de preencher os requisitos da vaga?</b>
+            </p>
+
+            <input type="radio" id="nps0" name="nota" value="0" class="nota">
+            <label for="nps0">0 (Péssima)</label>
+
+            <input type="radio" id="nps1" name="nota" value="1" class="nota">
+            <label for="nps1">1</label>
+
+            <input type="radio" id="nps2" name="nota" value="2" class="nota">
+            <label for="nps2">2</label>
+
+            <input type="radio" id="nps3" name="nota" value="3" class="nota">
+            <label for="nps3">3</label>
+
+            <input type="radio" id="nps4" name="nota" value="4" class="nota">
+            <label for="nps4">4</label>
+
+            <input type="radio" id="nps5" name="nota" value="5" class="nota">
+            <label for="nps5">5</label>
+
+            <input type="radio" id="nps6" name="nota" value="6" class="nota">
+            <label for="nps6">6</label>
+
+            <input type="radio" id="nps7" name="nota" value="7" class="nota">
+            <label for="nps7">7</label>
+
+            <input type="radio" id="nps8" name="nota" value="8" class="nota">
+            <label for="nps8">8</label>
+
+            <input type="radio" id="nps9" name="nota" value="9" class="nota">
+            <label for="nps9">9</label>
+
+            <input type="radio" id="nps10" name="nota" value="10" class="nota">
+            <label for="nps10">10 (Excelente)</label>
+
+            <br><br>
+            <p>
+                <b>Caso você estivesse com uma ou mais vagas iguais a esta, você contrataria este candidato para ela?</b>
+            </p>
+
+            <input type="radio" id="contrataria1" name="contrataria" value="1" class="contrataria">
+            <label for="nps9">Sim</label>
+
+            <input type="radio" id="contrataria2" name="contrataria" value="0" class="contrataria">
+            <label for="nps10">Não</label>
+            <br>
+            <center>
+                <div id="enviar" class="enviar">Eviar avaliação</div>
+            </center>
+        </form>
+      </div>
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -342,7 +350,8 @@
 
         // Finalizar isso aqui :D
         function finalizar() {
-            alert('finalizar :D');
+            $('#table-recommendations').hide();
+            $('#final').show();
         }
 
         function recomendar() {
@@ -451,6 +460,17 @@
 
         $(document).ready(function() {
 
+            $('#form_final_terminar').on('click', function() {
+                var form = $('#form_final').serialize();
+
+                form += '&experimento_id=' + experimento_id;
+
+                $.post('/api/experimento/', form, function(data) {
+                    $('#final').hide();
+                    $('#obrigado').show();
+                });
+            });
+
             $('#iniciar_recomendacao').on('click', function() {
 
                 if($('#recrutador').val().length == 0)
@@ -500,43 +520,43 @@
                     alert('Por favor, informe uma resposta para a nota e se você contrataria este candidato!');
                 else {
                   $.post('/api/nota/', form, function(data) {
-                        if (data.status == 'ok') {
-                            document.getElementById('close_modal').click();
+                    if (data.status == 'ok') {
+                        document.getElementById('close_modal').click();
 
-                            $('#avaliado_'+$('#profissional_id').val()).show();
-                            $('#avaliar_'+$('#profissional_id').val()).remove();
+                        $('#avaliado_'+$('#profissional_id').val()).show();
+                        $('#avaliar_'+$('#profissional_id').val()).remove();
 
-                            $("#npsForm input:radio[name='nota']:checked").prop('checked', false);
-                            $("#npsForm input:radio[name='contrataria']:checked").prop('checked', false);
+                        $("#npsForm input:radio[name='nota']:checked").prop('checked', false);
+                        $("#npsForm input:radio[name='contrataria']:checked").prop('checked', false);
 
-                            // mudar pra 0 esse valor
-                            if($(".avaliar").length == 9) {
-                                var flag = false;
+                        // mudar pra 0 esse valor
+                        if($(".avaliar").length == 9) {
+                            var flag = false;
 
-                                if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {
-                                    for(var vaga of dados_vagas) {
+                            if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {
+                                for(var vaga of dados_vagas) {
 
-                                        if(flag == true) {
-                                            vaga_atual = vaga['id'];
-                                            break;break;
-                                        }
-
-                                        if(vaga_atual == vaga['id']) {
-                                            flag = true;
-                                        } else {
-                                            flag = false;
-                                        }
+                                    if(flag == true) {
+                                        vaga_atual = vaga['id'];
+                                        break;break;
                                     }
 
-                                    recomendar();
-                                } else {
-                                    finalizar();
+                                    if(vaga_atual == vaga['id']) {
+                                        flag = true;
+                                    } else {
+                                        flag = false;
+                                    }
                                 }
+
+                                recomendar();
+                            } else {
+                                finalizar();
                             }
                         }
-                        else {
-                            alert('Houve um erro, tente novamente!');
-                        }
+                    }
+                    else {
+                        alert('Houve um erro, tente novamente!');
+                    }
                   });
                 }
             });
