@@ -10,9 +10,8 @@ admin.site.register(Habilidade)
 admin.site.register(Startup)
 admin.site.register(Projeto)
 admin.site.register(Premio)
-admin.site.register(RecomendacaoHabilidades)
+admin.site.register(Endossos)
 admin.site.register(Vaga)
-admin.site.register(NPS)
 
 admin.site.site_header = 'Maná admin'
 admin.site.site_title = 'Admin'

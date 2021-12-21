@@ -114,7 +114,7 @@
                 <input type="text" name="recrutador" id="recrutador">
             </form>
 
-            <button class="btn-mana" id="iniciar_recomendacao" style="margin-left: 20px;">Iniciar recomendações</button>
+            <button class="btn-mana" id="iniciar_recomendacao" style="margin-left: 20px;">Iniciar experimento</button>
         </div>
 
         <div id="wait" style="display:none;">
@@ -156,7 +156,7 @@
             <p>Estamos quase lá!</p>
             <br><br><br>
              <p>
-                 <b>Com base nos resultados, você recomendaria este método de recomendação de candidatos?</b>
+                 <b>Com base nos resultados, você indicaria este método de recomendação de candidatos para outros recrutadores?</b>
              </p>
 
             <form id="form_final">
@@ -171,7 +171,7 @@
                 <br><br>
 
                 <label for="sugestao">
-                    <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar a recomendação?</b>
+                    <b>Você pode deixar algumas sugestões ou críticas sobre como podemos melhorar as recomendações?</b>
                 </label>
                 <br>
                 <textarea id="sugestao" name="sugestao" rows="5" style="width: 50%"></textarea>
@@ -339,6 +339,9 @@
 
             html += '<li><b>Cultura:</b> '+ cultura_candidato +'</li>';
 
+            if(usuario['endossos'] > 0)
+                html += '<li><b>Recomendações de outros profissionais:</b> '+usuario['endossos']+'</li>';
+
             html += '</ol>';
             html += '</p>';
             html += '<input type="hidden" name="posicao_lista" value="'+usuario['posicao_lista']+'">';
@@ -374,7 +377,6 @@
 
                     if(total == 0) {
                         total = i.total;
-
                     }
 
                     html += '<tr>';
@@ -440,7 +442,7 @@
                                 areas_atuacao += ', ';
                         }
 
-                        html += '<li><b>Areas atuacao:</b> '+ areas_atuacao +'</li>';
+                        html += '<li><b>Nichos de mercado:</b> '+ areas_atuacao +'</li>';
                         html += '<li><b>Cultura:</b> '+ dados_vagas[i]['cultura'] +'</li>';
                         html += '</ol>';
                         html += '</p>';
@@ -469,6 +471,13 @@
                     $('#final').hide();
                     $('#obrigado').show();
                 });
+            });
+
+            $('#recrutador').on('keypress',function(e) {
+                if(e.which == 13) {
+                    document.getElementById('iniciar_recomendacao').click();
+                    e.preventDefault();
+                }
             });
 
             $('#iniciar_recomendacao').on('click', function() {
@@ -502,7 +511,6 @@
                 }
             });
 
-
             $('.close').click(function() {
                 $('#myModal').hide();
             });
@@ -515,8 +523,7 @@
                 form += '&vaga_id='+ vaga_atual;
                 form += '&experimento_id='+ experimento_id;
 
-
-                if ((nota == undefined || nota == null) && (contrataria == null || contrataria == undefined))
+                if ((nota == undefined || nota == null) || (contrataria == null || contrataria == undefined))
                     alert('Por favor, informe uma resposta para a nota e se você contrataria este candidato!');
                 else {
                   $.post('/api/nota/', form, function(data) {
@@ -529,8 +536,7 @@
                         $("#npsForm input:radio[name='nota']:checked").prop('checked', false);
                         $("#npsForm input:radio[name='contrataria']:checked").prop('checked', false);
 
-                        // mudar pra 0 esse valor
-                        if($(".avaliar").length == 9) {
+                        if($(".avaliar").length == 0) {
                             var flag = false;
 
                             if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {

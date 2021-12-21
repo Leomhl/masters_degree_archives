@@ -112,18 +112,17 @@ class Profissional(models.Model):
     projetos = models.ManyToManyField(Projeto, blank=True)
     premios = models.ManyToManyField(Premio, blank=True)
 
-class RecomendacaoHabilidades(models.Model):
+class Endossos(models.Model):
 
     def __str__(self):
-        return '{} -> {}'.format(self.recomendador, self.recomendado)
+        return '{} -> {}'.format(self.recomendado, self.recomendacoes)
 
     class Meta:
-        verbose_name = ("Recomendação de habilidade")
-        verbose_name_plural = ("Recomendações de habilidades")
+        verbose_name = ("Endosso")
+        verbose_name_plural = ("Endossos")
 
-    recomendador = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name='profissional_recomendador')
     recomendado = models.ForeignKey(Profissional, on_delete=models.CASCADE)
-    habilidades = models.ManyToManyField(Habilidade)
+    recomendacoes = models.IntegerField(default=0)
 
 class Vaga(models.Model):
 
@@ -144,16 +143,16 @@ class Vaga(models.Model):
     cultura = models.ForeignKey(Cultura, on_delete=models.CASCADE)
 
 # Depreciado
-class NPS(models.Model):
-
-    class Meta:
-        verbose_name = ("Nota")
-        verbose_name_plural = ("Nota")
-
-    vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)
-    nota = models.IntegerField(default=1, validators=[MaxValueValidator(10), MinValueValidator(0)])
-    sugestao = models.CharField(max_length=500, default='')
-    usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+# class NPS(models.Model):
+#
+#     class Meta:
+#         verbose_name = ("Nota")
+#         verbose_name_plural = ("Nota")
+#
+#     vaga = models.ForeignKey(Vaga, on_delete=models.DO_NOTHING)
+#     nota = models.IntegerField(default=1, validators=[MaxValueValidator(10), MinValueValidator(0)])
+#     sugestao = models.CharField(max_length=500, default='')
+#     usuario = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
 class Experimento(models.Model):
     recomendaria = models.BooleanField(null=True, default=True)

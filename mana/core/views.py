@@ -58,7 +58,7 @@ def recommendationsapi(request):
     habilidades_total = Habilidade.objects.count()
     projetos_total = Projeto.objects.count()
     premios_total = Premio.objects.count()
-    endossos_total = RecomendacaoHabilidades.objects.count()
+    endossos_total = Endossos.objects.count()
 
     # Dados da vaga
     vaga = Vaga.objects.filter(id=request.GET['id'])
@@ -73,9 +73,9 @@ def recommendationsapi(request):
     profissionais = json.loads(tmpJson)
 
     # Dados dos endossos
-    recomendacoes_habilidades = RecomendacaoHabilidades.objects.all()
-    tmpJson = serializers.serialize("json", recomendacoes_habilidades)
-    recomendacoes_habilidades = json.loads(tmpJson)
+    endossos = Endossos.objects.all()
+    tmpJson = serializers.serialize("json", endossos)
+    endossos = json.loads(tmpJson)
 
     # Dados das maturidades acadêmicas
     mat_academica_temp = MaturidadeAcademica.objects.all()
@@ -105,11 +105,11 @@ def recommendationsapi(request):
         profissional = profissional['fields']
 
 
-        for recomendacao_habilidade in recomendacoes_habilidades:
-            if recomendacao_habilidade['fields']['recomendado'] == profissional['id']:
-                profissional['recomendacoes'] = recomendacao_habilidade['fields']['habilidades']
+        for endosso in endossos:
+            if endosso['fields']['recomendado'] == profissional['id']:
+                profissional['endossos'] = endosso['fields']['recomendacoes']
             else:
-                profissional['recomendacoes'] = []
+                profissional['endossos'] = 0
 
         # Função do coeficiente de competência
         peso_mat_prof = 0
@@ -117,25 +117,25 @@ def recommendationsapi(request):
         peso_habilidades = 0
 
         if vaga['maturidade_profissional'] == profissional['maturidade_profissional']:
-            peso_mat_prof = 50
+            peso_mat_prof = 250
 
         if vaga['maturidade_profissional'] == 1:
             if profissional['maturidade_profissional'] == 2:
-                peso_mat_prof = -25
-            elif profissional['maturidade_profissional'] == 3:
                 peso_mat_prof = -50
+            elif profissional['maturidade_profissional'] == 3:
+                peso_mat_prof = -100
 
         if vaga['maturidade_profissional'] == 2:
             if profissional['maturidade_profissional'] == 3:
-                peso_mat_prof = -25
-            elif profissional['maturidade_profissional'] == 1:
                 peso_mat_prof = -50
+            elif profissional['maturidade_profissional'] == 1:
+                peso_mat_prof = -100
 
         if (vaga['maturidade_profissional'] == 3):
             if profissional['maturidade_profissional'] == 2:
-                peso_mat_prof = -25
-            elif profissional['maturidade_profissional'] == 1:
                 peso_mat_prof = -50
+            elif profissional['maturidade_profissional'] == 1:
+                peso_mat_prof = -100
 
         # Maturidade acadêmica correta para a vaga
         if profissional['maturidade_academica'] == vaga['maturidade_academica']:
@@ -194,8 +194,6 @@ def recommendationsapi(request):
         # Adaptação de cultura
         if (profissional['cultura'] == vaga['cultura']):
             peso_cultura = 50
-        elif (profissional['cultura'] > vaga['cultura']):
-            peso_cultura = -25
         else:
             peso_cultura = -25
 
@@ -211,28 +209,17 @@ def recommendationsapi(request):
                     peso_areas_similares += 35
 
         nos_da_rede = areas_total + habilidades_total + projetos_total + premios_total + endossos_total
-        grau_profissional = len(profissional['recomendacoes']) + len(profissional['areas_atuacao']) + len(
+        grau_profissional = profissional['endossos'] + len(profissional['areas_atuacao']) + len(
             profissional['startups']) + len(profissional['projetos']) + len(profissional['premios'])
 
-        if vaga['maturidade_profissional'] == 3:
-            # Sênior
-            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) / 10
-        elif vaga['maturidade_profissional'] == 2:
-            # Pleno
-            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) / 5
+        if vaga['maturidade_profissional'] == 1:
+            if profissional['maturidade_profissional'] == 1: # Jr
+                peso_popularidade = ((grau_profissional / (nos_da_rede - 1)) * 10000)
         else:
-            # Júnior o peso precisa ser 0 para não tornar desleal a competição
-            # já que obviamente ele não terá muita conexão com a rede
-            peso_popularidade = (grau_profissional / (nos_da_rede - 1))
+            peso_popularidade = (grau_profissional / (nos_da_rede - 1)) * 1000
 
-        # print('############### Grau do profissional {}'.format(grau_profissional))
-        # print('Nós da rede {}'.format(nos_da_rede))
-        # print('Peso popularidade {}'.format(peso_popularidade))
-        # print('Peso sem coeficiente {}'.format((grau_profissional / (nos_da_rede - 1))))
-        # print('Maturidade do profissional {}'.format(profissional['maturidade_profissional']))
-        # print('Maturidade profissional {}'.format(vaga['maturidade_profissional']))
-        # print('###############')
-
+        print('Peso habilidade {} - Nome {} - Vaga {} - Endosso {}'.format(peso_habilidades, profissional['nome'],
+                                                                           vaga['titulo'], profissional['endossos']))
         profissionalManaData = {
             'nome': profissional['nome'],
             'id': profissional['id'],
@@ -243,19 +230,19 @@ def recommendationsapi(request):
             # Função de competência
             'peso_mat_prof': peso_mat_prof,
             'peso_mat_acad': peso_mat_acad,
-            'peso_premiacoes': len(profissional['premios']),
+            'peso_premiacoes': len(profissional['premios']) * 25,
             'peso_habilidades': peso_habilidades,
             'peso_cultura': peso_cultura,
 
             # Função de conexão
             'peso_areas_similares': peso_areas_similares,
-            'peso_endosso': len(profissional['recomendacoes']) * 30,
+            'peso_endosso': profissional['endossos'] * 35,
             'peso_popularidade': peso_popularidade,
 
             'habilidades': profissional['habilidades'],
             'cultura': profissional['cultura'],
             'areas_atuacao': profissional['areas_atuacao'],
-            'endosso': len(profissional['recomendacoes'])
+            'endosso': profissional['endossos']
         }
 
         # Após criar a outra função, utilizar a ordenação com base nos pesos
@@ -268,6 +255,9 @@ def recommendationsapi(request):
         total += candidato['peso_areas_similares'] + candidato['peso_habilidades'] + candidato['peso_cultura'] + \
                  candidato['peso_popularidade']
 
+        if candidato['peso_habilidades'] <= 100:
+            total -= 100000
+
         recomendacao_resultado.append({
             'id': candidato['id'],
             'nome': candidato['nome'],
@@ -277,7 +267,7 @@ def recommendationsapi(request):
             'habilidades': candidato['habilidades'],
             'cultura': candidato['cultura'],
             'areas_atuacao': candidato['areas_atuacao'],
-            'endosso': candidato['endosso']
+            'endossos': candidato['endosso']
         })
 
     helpers.quick_sort(recomendacao_resultado, 0, len(recomendacao_resultado) - 1, lambda x, y: x['total'] < y['total'])
@@ -466,12 +456,12 @@ def notaapi(request):
         return JsonResponse({'status': 'erro', 'message': e.message}, safe=False)
 
 
-def npsapi(request):
-    try:
-        nps = NPS(nota=request.POST['nota'], sugestao=request.POST['sugestao'],
-                  usuario=User.objects.filter(id=request.user.id).first(),
-                  vaga=Vaga.objects.filter(id=request.POST['vaga_id']).first())
-        nps.save()
-        return JsonResponse({'status': 'ok'}, safe=False)
-    except:
-        return JsonResponse({'status': 'error'}, safe=False)
+# def npsapi(request):
+#     try:
+#         nps = NPS(nota=request.POST['nota'], sugestao=request.POST['sugestao'],
+#                   usuario=User.objects.filter(id=request.user.id).first(),
+#                   vaga=Vaga.objects.filter(id=request.POST['vaga_id']).first())
+#         nps.save()
+#         return JsonResponse({'status': 'ok'}, safe=False)
+#     except:
+#         return JsonResponse({'status': 'error'}, safe=False)
