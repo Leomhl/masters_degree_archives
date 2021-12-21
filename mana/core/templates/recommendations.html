@@ -280,6 +280,7 @@
         var dados_habilidades = [];
         var dados_areas_atuacao = [];
         var vaga_atual;
+        var index_vaga = 0;
         var experimento_id;
 
         // Ultilizada para criar as carinhas de happy, neutral e sad
@@ -301,10 +302,22 @@
             for(var j = 0; j < usuario['habilidades'].length; j++) {
                 for(var i = 0; i < dados_habilidades.length; i++) {
 
-                    if(dados_habilidades[i]['id'] == usuario['habilidades'][j]) {
-                        habilidades_candidato += dados_habilidades[i]['nome'];
 
-                         if(j != usuario['habilidades'].length -1)
+                    if(dados_habilidades[i]['id'] == usuario['habilidades'][j]) {
+                        var foi = 0;
+
+                        for(var k = 0; k < dados_vagas[index_vaga]['habilidades'].length; k++) {
+
+                            if(dados_habilidades[i]['nome'] == dados_vagas[index_vaga]['habilidades'][k]) {
+                                habilidades_candidato += '<b style="color: green;">'+dados_habilidades[i]['nome']+'</b>';
+                                foi = 1;
+                            }
+                        }
+
+                        if(foi == 0)
+                            habilidades_candidato += dados_habilidades[i]['nome'];
+
+                        if(j != usuario['habilidades'].length -1)
                             habilidades_candidato += ', ';
                     }
                 }
@@ -453,6 +466,7 @@
 
                     if(proximo == 1) {
                         vaga_atual = dados_vagas[i]['id'];
+                        index_vaga += 1;
                         proximo = 0;
                     }
                 }
@@ -544,6 +558,7 @@
 
                                     if(flag == true) {
                                         vaga_atual = vaga['id'];
+                                        index_vaga += 1;
                                         break;break;
                                     }
 
