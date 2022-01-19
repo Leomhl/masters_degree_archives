@@ -551,27 +551,7 @@
                         $("#npsForm input:radio[name='contrataria']:checked").prop('checked', false);
 
                         if($(".avaliar").length == 0) {
-                            var flag = false;
-
-                            if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {
-                                for(var vaga of dados_vagas) {
-
-                                    if(flag == true) {
-                                        vaga_atual = vaga['id'];
-                                        break;break;
-                                    }
-
-                                    if(vaga_atual == vaga['id']) {
-                                        flag = true;
-                                    } else {
-                                        flag = false;
-                                    }
-                                }
-
-                                recomendar();
-                            } else {
-                                finalizar();
-                            }
+                            proximo();
                         }
                     }
                     else {
@@ -583,5 +563,29 @@
 
             $('#menu-recommendation').addClass('active');
         });
+
+        function proximo() {
+            var flag = false;
+
+            if(vaga_atual !=  dados_vagas[dados_vagas.length-1]['id']) {
+                for(var vaga of dados_vagas) {
+
+                    if(flag == true) {
+                        vaga_atual = vaga['id'];
+                        break;break;
+                    }
+
+                    if(vaga_atual == vaga['id']) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                }
+
+                recomendar();
+            } else {
+                finalizar();
+            }
+        }
     </script>
 {% endblock %}
